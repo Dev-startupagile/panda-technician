@@ -4,7 +4,7 @@ description: A new Flutter project.
 publish_to: "none"
 
 
-version: 1.0.2+2
+version: 1.0.3+3
 
 environment:
   sdk: ">=2.18.4 <3.0.0"
@@ -28,9 +28,6 @@ dependencies:
   webview_flutter_android: ^3.3.1
   webview_flutter_wkwebview: ^3.1.1
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
   http: ^0.13.4
   image_picker: ^1.0.1 
   firebase_messaging: ^14.2.0
@@ -57,10 +54,19 @@ dev_dependencies:
   smooth_page_indicator: ^1.0.0+2
   flutter_dotenv: ^5.0.2
   cloud_firestore: ^4.3.0
-flutter_icons:
-  image_path: "assets/launch_image.png"
-  android: true
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  
+
+flutter_launcher_icons:
+  android: "launcher_icon"
   ios: true
+  image_path: "assets/logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  
 
 flutter:
   uses-material-design: true
