@@ -82,9 +82,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
     return File(croppedImage.path);
   }
 
-  suggetion()async{
-      
-  }
+  suggetion() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -109,165 +107,162 @@ class _CreateAccount2State extends State<CreateAccount2> {
               ),
               child: Column(
                 children: <Widget>[
-             Container(
-            width: 340,
-        
-            height: 50,
-            margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: errorForm != 1
-                          ? Colors.grey.withOpacity(0.2)
-                          : Colors.red,
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: TextField(
-              enabled: true,
-              
-                controller: streetController,
-              onChanged: (value) async{
-                var listStreet =await ApiHandler().autoComplete(value);
-                        
-                          this.setState(() {
-                           streetList =jsonDecode(listStreet)["predictions"] ;
-                            
-                          });
-
-              },
-              style: const TextStyle(fontSize: 16),
-              cursorWidth: 1,
-              decoration: const InputDecoration(
-                counterText: '',
-                border: InputBorder.none,
-                hintText:  "Street",
-                prefixIcon: Icon(Icons.location_city),
-              ),
-            )),
-        
                   Container(
-                    height:  streetList.length *50,
-                 child: ListView.builder(
-          itemCount: streetList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return  GestureDetector(
-onTap: ((){
-     
-  setState(() {
-    updater = !updater;
-                        streetController.text = streetList[index]["description"].split(",")[0];
-                        cityController.text =  streetList[index]["description"].split(",")[1];
-                        stateController.text = streetList[index]["description"].split(",")[2];
-                        widget.arguments.street = streetList[index]["description"].split(",")[0];
-                        widget.arguments.city = streetList[index]["description"].split(",")[1];
-                        widget.arguments.state = streetList[index]["description"].split(",")[2];
-                        street = streetList[index]["description"].split(",")[0];
-                        city = streetList[index]["description"].split(",")[1];
-                        state = streetList[index]["description"].split(",")[2];
+                      width: 340,
+                      height: 50,
+                      margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: errorForm != 1
+                                ? Colors.grey.withOpacity(0.2)
+                                : Colors.red,
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        enabled: true,
+                        controller: streetController,
+                        onChanged: (value) async {
+                          var listStreet =
+                              await ApiHandler().autoComplete(value);
 
-    streetList = [];
-  });
-                      
+                          this.setState(() {
+                            streetList = jsonDecode(listStreet)["predictions"];
+                          });
+                        },
+                        style: const TextStyle(fontSize: 16),
+                        cursorWidth: 1,
+                        decoration: const InputDecoration(
+                          counterText: '',
+                          border: InputBorder.none,
+                          hintText: "Street",
+                          prefixIcon: Icon(Icons.location_city),
+                        ),
+                      )),
+                  Container(
+                      height: streetList.length * 50,
+                      child: ListView.builder(
+                          itemCount: streetList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                                onTap: (() {
+                                  setState(() {
+                                    updater = !updater;
+                                    streetController.text = streetList[index]
+                                            ["description"]
+                                        .split(",")[0];
+                                    cityController.text = streetList[index]
+                                            ["description"]
+                                        .split(",")[1];
+                                    stateController.text = streetList[index]
+                                            ["description"]
+                                        .split(",")[2];
+                                    widget.arguments.street = streetList[index]
+                                            ["description"]
+                                        .split(",")[0];
+                                    widget.arguments.city = streetList[index]
+                                            ["description"]
+                                        .split(",")[1];
+                                    widget.arguments.state = streetList[index]
+                                            ["description"]
+                                        .split(",")[2];
+                                    street = streetList[index]["description"]
+                                        .split(",")[0];
+                                    city = streetList[index]["description"]
+                                        .split(",")[1];
+                                    state = streetList[index]["description"]
+                                        .split(",")[2];
 
-                }),
-              child:
-              ListTile(
-                
-                leading: const Icon(Icons.location_on),
-               
-                title: Text(streetList[index]["description"])));
-          })
-              ),
-  Container(
-            width: 340,
-        
-            height: 50,
-            margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: errorForm != 1
-                          ? Colors.grey.withOpacity(0.2)
-                          : Colors.red,
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: 
-               TextField(
-              enabled: true,
-              
-                controller: cityController,
-              onChanged: (value) async{
-               
-
-              },
-              style: const TextStyle(fontSize: 16),
-              cursorWidth: 1,
-              decoration: const InputDecoration(
-                counterText: '',
-                border: InputBorder.none,
-                hintText:  "City",
-                prefixIcon: Icon(Icons.location_city),
-              ),
-            )),
-              Container(
-            width: 340,
-        
-            height: 50,
-            margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: errorForm != 1
-                          ? Colors.grey.withOpacity(0.2)
-                          : Colors.red,
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: 
-             TextField(
-              enabled: true,
-              
-                controller: stateController,
-              onChanged: (value) async{
-              
-
-              },
-              style: const TextStyle(fontSize: 16),
-              cursorWidth: 1,
-              decoration: const InputDecoration(
-                counterText: '',
-                border: InputBorder.none,
-                hintText:  "State",
-                prefixIcon: Icon(Icons.location_city),
-              ),
-            )),
-   
+                                    streetList = [];
+                                  });
+                                }),
+                                child: ListTile(
+                                    leading: const Icon(Icons.location_on),
+                                    title: Text(
+                                        streetList[index]["description"])));
+                          })),
+                  Container(
+                      width: 340,
+                      height: 50,
+                      margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: errorForm != 1
+                                ? Colors.grey.withOpacity(0.2)
+                                : Colors.red,
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        enabled: true,
+                        controller: cityController,
+                        onChanged: (value) async {},
+                        style: const TextStyle(fontSize: 16),
+                        cursorWidth: 1,
+                        decoration: const InputDecoration(
+                          counterText: '',
+                          border: InputBorder.none,
+                          hintText: "City",
+                          prefixIcon: Icon(Icons.location_city),
+                        ),
+                      )),
+                  Container(
+                      width: 340,
+                      height: 50,
+                      margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: errorForm != 1
+                                ? Colors.grey.withOpacity(0.2)
+                                : Colors.red,
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        enabled: true,
+                        controller: stateController,
+                        onChanged: (value) async {},
+                        style: const TextStyle(fontSize: 16),
+                        cursorWidth: 1,
+                        decoration: const InputDecoration(
+                          counterText: '',
+                          border: InputBorder.none,
+                          hintText: "State",
+                          prefixIcon: Icon(Icons.location_city),
+                        ),
+                      )),
                   TextFiledCustom(
-                      updateCallback: ((value) {
-                        zipcode = value;
-                        widget.arguments.zipCode = int.parse(value);
-                      }),
-                      preIcon: Icons.code,
-                      hintText: "Zip Code",
-                      isPassword: false,
-                      isZipCode: true,
-                      isEmail: false,
-                      isNumber: true,
-                       isError:widget.arguments.zipCode.toString().length  != 5? (errorForm == 404)? true :  errorForm == 4 : false,),
+                    updateCallback: ((value) {
+                      zipcode = value;
+                      widget.arguments.zipCode = int.parse(value);
+                    }),
+                    preIcon: Icons.code,
+                    hintText: "Zip Code",
+                    isPassword: false,
+                    isZipCode: true,
+                    isEmail: false,
+                    isNumber: true,
+                    isError: widget.arguments.zipCode.toString().length != 5
+                        ? (errorForm == 404)
+                            ? true
+                            : errorForm == 4
+                        : false,
+                  ),
                   Container(
                     alignment: Alignment.bottomLeft,
                     height: 30,
@@ -280,16 +275,21 @@ onTap: ((){
                     ),
                   ),
                   TextFiledCustom(
-                      updateCallback: ((value) {
-                        widget.arguments.hourlyFee = int.parse(value);
-                      }),
-                      preIcon: Icons.attach_money,
-                      hintText: "Hourly Fee",
-                      isPassword: false,
-                      isZipCode: false,
-                      isEmail: false,
-                      isNumber: true,
-                       isError: widget.arguments.hourlyFee == 0? (errorForm == 404)? true :  errorForm == 5: false,),
+                    updateCallback: ((value) {
+                      widget.arguments.hourlyFee = int.parse(value);
+                    }),
+                    preIcon: Icons.attach_money,
+                    hintText: "Hourly Fee",
+                    isPassword: false,
+                    isZipCode: false,
+                    isEmail: false,
+                    isNumber: true,
+                    isError: widget.arguments.hourlyFee == 0
+                        ? (errorForm == 404)
+                            ? true
+                            : errorForm == 5
+                        : false,
+                  ),
                   Container(
                     alignment: Alignment.bottomLeft,
                     height: 30,
@@ -302,16 +302,21 @@ onTap: ((){
                     ),
                   ),
                   TextFiledCustom(
-                      updateCallback: ((value) {
-                        widget.arguments.diagnosticFee = int.parse(value);
-                      }),
-                      preIcon: Icons.attach_money,
-                      hintText: "Diagnostic Fee",
-                      isPassword: false,
-                      isZipCode: false,
-                      isEmail: false,
-                      isNumber: true,
-                       isError: widget.arguments.diagnosticFee == 0? (errorForm == 404)? true :  errorForm == 6 : false,),
+                    updateCallback: ((value) {
+                      widget.arguments.diagnosticFee = int.parse(value);
+                    }),
+                    preIcon: Icons.attach_money,
+                    hintText: "Diagnostic Fee",
+                    isPassword: false,
+                    isZipCode: false,
+                    isEmail: false,
+                    isNumber: true,
+                    isError: widget.arguments.diagnosticFee == 0
+                        ? (errorForm == 404)
+                            ? true
+                            : errorForm == 6
+                        : false,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -333,7 +338,6 @@ onTap: ((){
                         width: MediaQuery.of(context).size.width * 0.2,
                       ),
                       Row(
-                        
                         children: <Widget>[
                           Checkbox(
                             checkColor: Colors.white,
@@ -403,15 +407,15 @@ onTap: ((){
                 margin: const EdgeInsets.all(10),
                 child: TextButton(
                   onPressed: () async {
-                    Message message =
-                        signUpFormValidation(widget.arguments, isAgreed,zipcode);
+                    Message message = signUpFormValidation(
+                        widget.arguments, isAgreed, zipcode);
                     if (message.success) {
                       Loading(context);
                       var response = await ApiHandler()
                           .createAccount(widget.arguments, context);
                     } else {
-                      setState((){
-                          errorForm = message.formIndex;
+                      setState(() {
+                        errorForm = message.formIndex;
                       });
                       showPurchaseDialog(
                           context, "Error Occured", message.message,
