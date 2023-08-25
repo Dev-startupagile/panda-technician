@@ -1,26 +1,18 @@
 // ignore_for_file: file_names
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 // ignore: unnecessary_import
 import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 // ignore: depend_on_referenced_packages
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
-import 'package:panda_technician/components/globalComponents/dropDown.dart';
 import 'package:panda_technician/components/loading.dart';
-import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
 import 'package:panda_technician/models/messages/message.dart';
 import 'package:panda_technician/models/auth/signUp.dart';
-import 'package:google_maps_webservice/places.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:panda_technician/services/validationServices.dart';
 
@@ -33,12 +25,8 @@ class CreateAccount2 extends StatefulWidget {
 }
 
 class _CreateAccount2State extends State<CreateAccount2> {
-  final ImagePicker _picker = ImagePicker();
-  SignUp userDetail = SignUp();
   String zipcode = "";
-  var confirmedPassword = "";
   bool isCompany = false;
-  get controller => null;
   int errorForm = 0;
   bool updater = false;
   String street = "";
@@ -51,38 +39,10 @@ class _CreateAccount2State extends State<CreateAccount2> {
   @override
   void initState() {
     super.initState();
-    userDetail.userRole = "technician";
-    confirmedPassword = "";
     streetList = [];
   }
 
   bool isAgreed = false;
-  PhoneNumber number = PhoneNumber(isoCode: 'US');
-  String uriPath = "";
-  // Pick an image
-  void getImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    final path = image!.path;
-
-    File? croped = await _cropImage(path);
-    var response = await ApiHandler().fileUpload(croped!.path);
-    var profileP = json.decode(response.toString()).cast<String, dynamic>();
-
-    userDetail.profilePicture = profileP["result"]["Location"];
-
-    setState(() {
-      uriPath = croped!.path;
-    });
-  }
-
-  Future<File?> _cropImage(String path) async {
-    CroppedFile? croppedImage =
-        await ImageCropper().cropImage(sourcePath: path);
-    if (croppedImage == null) return null;
-    return File(croppedImage.path);
-  }
-
-  suggetion() async {}
 
   @override
   Widget build(BuildContext context) {

@@ -1,37 +1,33 @@
-// To parse this JSON data, do
-//
-//     final RequestsModel = requestsFromJson(jsonString);
-
 import 'dart:convert';
 
-import 'package:panda_technician/screens/requests/requestes.dart';
+List<RequestsModel> requestsFromJson(String str) => List<RequestsModel>.from(
+    json.decode(str).map((x) => RequestsModel.fromJson(x)));
 
-List<RequestsModel> requestsFromJson(String str) => List<RequestsModel>.from(json.decode(str).map((x) => RequestsModel.fromJson(x)));
-
-String requestsToJson(List<RequestsModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String requestsToJson(List<RequestsModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class RequestsModel {
-    RequestsModel({
-        this.id = 0,
-        this.date = "",
-        this.serviceType = "",
-        this.customerName = "",
-        this.customerAvater = "",
-        this.customerCar = "",
-        this.status = "",
-        this.price = 2,
-    });
+  RequestsModel({
+    this.id = 0,
+    this.date = "",
+    this.serviceType = "",
+    this.customerName = "",
+    this.customerAvater = "",
+    this.customerCar = "",
+    this.status = "",
+    this.price = 2,
+  });
 
-    int id;
-    String date;
-    String serviceType;
-    String customerName;
-    String customerAvater;
-    String customerCar;
-    String status;
-    int price;
+  int id;
+  String date;
+  String serviceType;
+  String customerName;
+  String customerAvater;
+  String customerCar;
+  String status;
+  int price;
 
-    factory RequestsModel.fromJson(Map<String, dynamic> json) => RequestsModel(
+  factory RequestsModel.fromJson(Map<String, dynamic> json) => RequestsModel(
         id: json["id"],
         date: json["date"],
         serviceType: json["serviceType"],
@@ -40,9 +36,9 @@ class RequestsModel {
         customerCar: json["customerCar"],
         status: json["status"],
         price: json["price"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "date": date,
         "serviceType": serviceType,
@@ -51,5 +47,5 @@ class RequestsModel {
         "customerCar": customerCar,
         "status": status,
         "price": price,
-    };
+      };
 }

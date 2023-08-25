@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:panda_technician/models/DetailedOffer.dart';
-import 'package:panda_technician/models/RequestsModel.dart';
 import 'package:panda_technician/models/auth/signUp.dart';
-import 'package:panda_technician/models/offer.dart';
 import 'package:panda_technician/models/requests/detailedRequest.dart';
-import 'package:panda_technician/models/requests/requests.dart';
 import 'package:panda_technician/models/requests/watchRequestDetail.dart';
-import 'package:panda_technician/models/vehicle/vehicle.dart';
 
 import 'package:panda_technician/screens/auth/LoginScreen.dart';
 import 'package:panda_technician/screens/auth/creatAccount2.dart';
@@ -28,7 +24,6 @@ import 'package:panda_technician/screens/profile/editPassword.dart';
 import 'package:panda_technician/screens/profile/editProfile.dart';
 import 'package:panda_technician/screens/profile/payment.dart';
 import 'package:panda_technician/screens/profile/profile.dart';
-import 'package:panda_technician/screens/profile/stripeWebview.dart';
 import 'package:panda_technician/screens/requestFlow/jobDetail.dart';
 import 'package:panda_technician/screens/requests/MapScreen.dart';
 import 'package:panda_technician/screens/requestFlow/acceptJob.dart';

@@ -1,18 +1,14 @@
-
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 
 class CentredMessage extends StatelessWidget {
-   CentredMessage({super.key,required this.messageWidget });
-Widget messageWidget;
+  CentredMessage({super.key, required this.messageWidget});
+  Widget messageWidget;
   @override
   Widget build(BuildContext context) {
-    return   Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-          child: messageWidget
-        );
+    return Container(
+        alignment: Alignment.center,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: messageWidget);
   }
 }

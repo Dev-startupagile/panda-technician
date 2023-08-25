@@ -3,14 +3,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
-import 'package:panda_technician/models/DetailedOffer.dart';
 import 'package:panda_technician/models/bankInfo.dart';
 import 'package:panda_technician/models/globalModels/schedule.dart';
 import 'package:panda_technician/models/offer.dart';
@@ -26,18 +24,12 @@ import 'package:panda_technician/models/requests/viewDetailRequests.dart';
 import 'package:panda_technician/models/requests/watchRequestDetail.dart';
 import 'package:panda_technician/models/service/service.dart';
 import 'package:panda_technician/models/vehicle/vehicle.dart';
-import 'package:panda_technician/screens/offers/listOffers.dart';
 import 'package:panda_technician/screens/requests/StatusRequest.dart';
-import 'package:panda_technician/services/fcmService.dart';
-import 'package:panda_technician/services/servicePhone.dart';
-import 'package:panda_technician/store/StateProvider.dart';
 import 'package:panda_technician/store/profileProvider.dart';
 import '../util/constant.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http_parser/http_parser.dart' as parser;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiHandler {
@@ -893,7 +885,6 @@ class ApiHandler {
       return false;
 
       // });
-
     } catch (e) {
       print("Error: " + e.toString());
       print("Line: 899");
@@ -1059,7 +1050,8 @@ class ApiHandler {
         print("MY TOKEN: " + token.toString());
         fcmToken = token.toString();
         requestBody.fcm_token = fcmToken;
-        requestBody.phoneNumber = formatPhoneNumber(requestBody.phoneNumber);
+        // requestBody.phoneNumber = formatPhoneNumber(requestBody.phoneNumber);
+        requestBody.phoneNumber = requestBody.phoneNumber;
         print("AKA :" + requestBody.phoneNumber);
         print("BODY: " + json.encode(requestBody));
 
@@ -1079,10 +1071,10 @@ class ApiHandler {
 // prefs.setString("apiToken", json.decode(response.body)["token"]);
             prefs.setString("userId", json.decode(response.body)["userID"]);
             prefs.setString("userEmail", requestBody.email);
+
             Navigator.popAndPushNamed(context, "Signup");
           } else {
             //todo: error message add here
-
           }
         } else {
           if (response.statusCode == 500) {

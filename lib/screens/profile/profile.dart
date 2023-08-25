@@ -18,6 +18,8 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../util/constant.dart';
+
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -32,13 +34,14 @@ class _ProfileState extends State<Profile> {
   bool loaded = false;
 
   String strapiToken = "";
+  Map<String, dynamic> stripeRetrieveAccountData = {};
 
   @override
   void initState() {
     super.initState();
     // profile  = Provider.of<ProfileProvider>(context,listen: true).profile as ProfileModel;
-    // getStripeToken();
-
+    getStripeToken();
+    stripeRetrieveAccount();
     getProfiles();
   }
 
@@ -47,9 +50,8 @@ class _ProfileState extends State<Profile> {
     var token = prefs.getString("apiToken");
 
     var response = await http.get(
-      Uri.parse(
-          'https://310g2h7964.execute-api.us-east-2.amazonaws.com/dev/account/connectAccountLink'),
-      headers: {HttpHeaders.authorizationHeader: "Bearer ${token}"},
+      Uri.parse('${ApiConstants.baseUrl}account/connectAccountLink'),
+      headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
     );
 
     setState(() {
@@ -58,19 +60,33 @@ class _ProfileState extends State<Profile> {
     // strapiToken = json.decode(response.body)["url"];
   }
 
-  void getProfiles() async {
-    profile = (await ApiHandler().getProfile())!;
+  Future<void> stripeRetrieveAccount() async {
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("apiToken");
 
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
-          profile = profile;
-          loaded = true;
-        }));
+    var response = await http.post(
+      Uri.parse('${ApiConstants.baseUrl}account/get/connectedAccount'),
+      headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+    );
+    setState(() {
+      stripeRetrieveAccountData = json.decode(response.body)["data"];
+    });
+  }
+
+  void getProfiles() async {
+    profile = (await ApiHandler().getProfile());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        profile = profile;
+        loaded = true;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    ProfileModel profile = Provider.of<ProfileProvider>(context, listen: true)
-        .profile as ProfileModel;
+    ProfileModel profile =
+        Provider.of<ProfileProvider>(context, listen: true).profile;
     if (profile.id == "") {
       Provider.of<ProfileProvider>(context, listen: false)
           .changeProfileProvider(profile);
@@ -170,18 +186,36 @@ class _ProfileState extends State<Profile> {
                           })),
                       SingleTag(
                           ico: Icons.payments_outlined,
-                          title: "Payments",
+                          title:
+                              stripeRetrieveAccountData["details_submitted"] ==
+                                          null ||
+                                      stripeRetrieveAccountData[
+                                              "details_submitted"] ==
+                                          false
+                                  ? "Payments"
+                                  : "Payment Already linked",
                           callBackHandler: (() async {
+                            if (stripeRetrieveAccountData[
+                                    "details_submitted"] !=
+                                null) {
+                              // Navigator.pop(context);
+                              DialogBox(context, "Message", "Already Connected",
+                                  "Cancel", "Ok", (() {
+                                Navigator.pop(context);
+                              }), (() {
+                                Navigator.pop(context);
+                              }));
+                              return;
+                            }
                             // Navigator.pushNamed(context, "Payment");
                             final prefs = await SharedPreferences.getInstance();
                             var token = prefs.getString("apiToken");
                             Loading(context);
                             var response = await http.get(
                               Uri.parse(
-                                  'https://310g2h7964.execute-api.us-east-2.amazonaws.com/dev/account/connectAccountLink'),
+                                  '${ApiConstants.baseUrl}account/connectAccountLink'),
                               headers: {
-                                HttpHeaders.authorizationHeader:
-                                    "Bearer ${token}"
+                                HttpHeaders.authorizationHeader: "Bearer $token"
                               },
                             );
 
@@ -191,7 +225,6 @@ class _ProfileState extends State<Profile> {
 
                             var authUrl =
                                 json.decode(response.body)["url"] ?? "empty";
-                            ;
 
                             if (authUrl == "empty") {
                               Navigator.pop(context);
