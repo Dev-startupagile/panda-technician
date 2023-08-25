@@ -196,8 +196,11 @@ class _ProfileState extends State<Profile> {
                                   : "Payment Already linked",
                           callBackHandler: (() async {
                             if (stripeRetrieveAccountData[
-                                    "details_submitted"] !=
-                                null) {
+                                        "details_submitted"] !=
+                                    null ||
+                                stripeRetrieveAccountData[
+                                        "details_submitted"] ==
+                                    false) {
                               // Navigator.pop(context);
                               DialogBox(context, "Message", "Already Connected",
                                   "Cancel", "Ok", (() {
