@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:panda_technician/apiHandler/apiHandler.dart';
+import 'package:panda_technician/app/modal/auto_service/service_request_model.dart';
 import 'package:panda_technician/app/modules/job_offer/job_offer.controller.dart';
 import 'package:panda_technician/components/messageComponents/centredMessage.dart';
-import 'package:panda_technician/models/requests/requests.dart';
-import 'package:panda_technician/screens/requests/StatusRequest.dart';
 import 'package:panda_technician/services/serviceLocation.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:http/http.dart' as http;
 
 class MapCard extends StatefulWidget {
   MapCard({super.key, required this.myLocation, required this.locationFound});
-  LatLng myLocation;
-  bool locationFound;
+  final LatLng myLocation;
+  final bool locationFound;
   @override
   State<MapCard> createState() => _MapCardState();
 }
@@ -33,12 +31,13 @@ class _MapCardState extends State<MapCard> {
   }
 
   void getCustomers() async {
-    List<RequestsM> tempStatusRequest = await jobOfferController.getRequests();
+    List<ServiceRequestModel> tempStatusRequest =
+        await jobOfferController.getRequests();
 
     for (int x = 0; x < tempStatusRequest.length; x++) {
       if (tempStatusRequest[x].requestStatus == "PENDING") {
         var request = await http
-            .get(Uri.parse(tempStatusRequest[x].vehiclesDetail[0].image));
+            .get(Uri.parse(tempStatusRequest[x].vehiclesDetail![0].image));
         var bytes = await request.bodyBytes;
         IMG.Image? img = IMG.decodeImage(bytes);
         IMG.Image resized = IMG.copyResize(img!, width: 100);
@@ -56,8 +55,8 @@ class _MapCardState extends State<MapCard> {
             position: LatLng(tempStatusRequest[x].serviceLocation.latitude,
                 tempStatusRequest[x].serviceLocation.longitude),
             onTap: () {
-              ApiHandler().jobDetailed(
-                  tempStatusRequest[x].id, context, tempStatusRequest[x]);
+              jobOfferController.goToServiceRequestDetailPage(
+                  tempStatusRequest[x].id, tempStatusRequest[x]);
             });
 
         markers.add(resultMarker);

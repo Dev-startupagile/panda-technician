@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
 import 'package:panda_technician/components/globalComponents/customButton.dart';
@@ -11,6 +12,7 @@ import 'package:panda_technician/components/messageComponents/centredMessage.dar
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/models/auth/signUp.dart';
 import 'package:panda_technician/models/profile.dart';
+import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/services/AWSClient.dart';
 
 import 'package:provider/provider.dart';
@@ -84,15 +86,15 @@ class _EditProfileState extends State<EditProfile> {
           "tech.jpg";
     } else {
       DialogBox(context, "Error", "Something went wrong", "Cancel", "Ok", (() {
-        Navigator.pop(context);
+        Get.back();
       }), (() {
-        Navigator.pop(context);
+        Get.back();
       }));
     }
 
     setState(() {
       uriPath = croped!.path;
-      Navigator.pop(context);
+      Get.back();
     });
   }
 
@@ -192,8 +194,9 @@ class _EditProfileState extends State<EditProfile> {
                                                         decoration:
                                                             BoxDecoration(
                                                           color: Colors.white,
-                                                              borderRadius: BorderRadius.circular(20),
-
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(20),
                                                           boxShadow: [
                                                             BoxShadow(
                                                               color: Colors.grey
@@ -208,7 +211,7 @@ class _EditProfileState extends State<EditProfile> {
                                                           ],
                                                         ),
                                                         margin: const EdgeInsets
-                                                                .fromLTRB(
+                                                            .fromLTRB(
                                                             0, 15, 0, 0),
                                                         height: 60,
                                                         child: Row(
@@ -220,26 +223,35 @@ class _EditProfileState extends State<EditProfile> {
                                                               Icons.image,
                                                               size: 28,
                                                             ),
-                                                            SizedBox(width: 5,),
-                                                            Text("Browse Gallery", style: TextStyle(fontWeight: FontWeight.bold),)
+                                                            SizedBox(
+                                                              width: 5,
+                                                            ),
+                                                            Text(
+                                                              "Browse Gallery",
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            )
                                                           ],
                                                         ),
                                                       ),
                                                       onTap: () {
-                                                        Navigator.pop(context);
+                                                        Get.back();
 
                                                         getImage("GALLERY");
                                                       },
                                                     ),
-                                                     const SizedBox(
-              height: 10,
-            ),
-                                                     const Center(
-              child: Text(
-                'OR',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    const Center(
+                                                      child: Text(
+                                                        'OR',
+                                                        style: TextStyle(
+                                                            fontSize: 18),
+                                                      ),
+                                                    ),
                                                     InkWell(
                                                       child: Container(
                                                         alignment:
@@ -251,7 +263,9 @@ class _EditProfileState extends State<EditProfile> {
                                                             0.9,
                                                         decoration:
                                                             BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(20),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(20),
                                                           color: Colors.white,
                                                           boxShadow: [
                                                             BoxShadow(
@@ -267,23 +281,34 @@ class _EditProfileState extends State<EditProfile> {
                                                           ],
                                                         ),
                                                         margin: const EdgeInsets
-                                                                .fromLTRB(
+                                                            .fromLTRB(
                                                             0, 15, 0, 0),
                                                         height: 60,
                                                         child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
                                                           children: const [
                                                             Icon(
-                                                              Icons.camera_alt_outlined,
+                                                              Icons
+                                                                  .camera_alt_outlined,
                                                               size: 28,
                                                             ),
-                                                            SizedBox(width: 5,),
-                                                            Text("Use a Camera", style: TextStyle(fontWeight: FontWeight.bold),)
+                                                            SizedBox(
+                                                              width: 5,
+                                                            ),
+                                                            Text(
+                                                              "Use a Camera",
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            )
                                                           ],
                                                         ),
                                                       ),
                                                       onTap: () {
-                                                        Navigator.pop(context);
+                                                        Get.back();
 
                                                         getImage("CAMERA");
                                                       },
@@ -466,7 +491,7 @@ class _EditProfileState extends State<EditProfile> {
                         CustomButton(
                           buttonTitle: "Edit Password",
                           callBackFunction: () {
-                            Navigator.pushNamed(context, "EditPassword");
+                            Get.toNamed(editPassword);
                           },
                           width: MediaQuery.of(context).size.width * 0.9,
                           buttonColor: Colors.grey.shade800,

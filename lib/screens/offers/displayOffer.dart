@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/globalComponents/customButton.dart';
 import 'package:panda_technician/models/DetailedOffer.dart';
-import 'package:panda_technician/models/offer.dart';
 import 'package:panda_technician/models/profile.dart';
 import 'package:panda_technician/services/serviceDate.dart';
 import 'package:panda_technician/store/profileProvider.dart';
@@ -12,9 +12,8 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class DisplayOffer extends StatelessWidget {
-  DisplayOffer({super.key, required this.detailedOffer});
-
-  DetailedOffer detailedOffer;
+  DisplayOffer({super.key});
+  DetailedOffer detailedOffer = Get.arguments;
 
   double getTotal() {
     double total = 0;
@@ -59,227 +58,235 @@ class DisplayOffer extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(color: Colors.grey.shade400, blurRadius: 5)
                 ]),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-                    Widget>[
-              Container(
-                child: Row(children: [
-                  Text("Service Type: ",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  Text("${detailedOffer.offer.title}",
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.normal)),
-                ]),
-              ),
-              Container(
-                child: Row(children: [
-                  Text("Requester: ",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  Text("${profile.fullName}",
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.normal)),
-                ]),
-              ),
-              Container(
-                child: Row(children: [
-                  Text("Id: ",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  Text("${detailedOffer.offer.requestId.split("-")[4]}",
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.normal)),
-                ]),
-              ),
-              Container(
-                child: Row(children: [
-                  Text("Date: ",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  Text(
-                      "${getUsDateFormat((detailedOffer.offer.createdAt == "") ? DateTime.now().toIso8601String() : DateTime.parse(detailedOffer.offer.createdAt).toIso8601String())}",
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.normal)),
-                ]),
-              ),
-              Container(
-                child: Row(children: [
-                  Text("Time: ",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  Text(
-                      "${changeToAmPm((detailedOffer.offer.createdAt == "") ? DateTime.now().toIso8601String() : DateTime.parse(detailedOffer.offer.createdAt).toIso8601String())}",
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.normal)),
-                ]),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                  height: 35,
-                  decoration: BoxDecoration(color: Colors.grey[500]),
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Text(
-                          "Title",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Text("Price",
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  )),
-              Container(
-                height: 250,
-                width: MediaQuery.of(context).size.width,
-                child: ListView.builder(
-                    itemCount: detailedOffer.offer.items.length,
-                    itemBuilder: (context, index) {
-                      return (index == detailedOffer.offer.items.length - 1)
-                          ? Column(
-                              children: [
-                                Container(
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            bottom: BorderSide(
-                                                color: Colors.grey.shade400,
-                                                width: 1))),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                            child: Row(children: [
-                                              Text(
-                                                  "${detailedOffer.offer.items[index].title}",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.normal)),
-                                            ]),
-                                          ),
-                                          Container(
-                                            child: Row(children: [
-                                              Text(
-                                                  "\$${detailedOffer.offer.items[index].price}",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.normal)),
-                                            ]),
-                                          ),
-                                        ])),
-                                Container(
-                                  child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text("Tax: ",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold)),
-                                        Text(
-                                            "\$${((detailedOffer.offer.vat * getTotal()) / 100)}",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.normal)),
-                                      ]),
-                                ),
-                                ((detailedOffer.offer.discount != 0.0)
-                                    ? Container(
-                                        child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text("Discount: ",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              Text(
-                                                  " ${detailedOffer.offer.discount}",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.normal)),
-                                            ]),
-                                      )
-                                    : SizedBox()),
-                                Container(
-                                  child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text("Total: ",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold)),
-                                        Text(
-                                            "\$${double.parse(detailedOffer.offer.totalEstimation)}",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.normal)),
-                                      ]),
-                                ),
-                              ],
-                            )
-                          : Container(
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.grey.shade400,
-                                          width: 1))),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: Row(children: [
+                      Text("Service Type: ",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text("${detailedOffer.offer.title}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.normal)),
+                    ]),
+                  ),
+                  Container(
+                    child: Row(children: [
+                      Text("Requester: ",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text("${profile.fullName}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.normal)),
+                    ]),
+                  ),
+                  Container(
+                    child: Row(children: [
+                      Text("Id: ",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text("${detailedOffer.offer.requestId.split("-")[4]}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.normal)),
+                    ]),
+                  ),
+                  Container(
+                    child: Row(children: [
+                      Text("Date: ",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text(
+                          "${getUsDateFormat((detailedOffer.offer.createdAt == "") ? DateTime.now().toIso8601String() : DateTime.parse(detailedOffer.offer.createdAt).toIso8601String())}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.normal)),
+                    ]),
+                  ),
+                  Container(
+                    child: Row(children: [
+                      Text("Time: ",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text(
+                          "${changeToAmPm((detailedOffer.offer.createdAt == "") ? DateTime.now().toIso8601String() : DateTime.parse(detailedOffer.offer.createdAt).toIso8601String())}",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.normal)),
+                    ]),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                      height: 35,
+                      decoration: BoxDecoration(color: Colors.grey[500]),
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(5),
+                            child: Text(
+                              "Title",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(5),
+                            child: Text("Price",
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      )),
+                  Container(
+                    height: 250,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                        itemCount: detailedOffer.offer.items.length,
+                        itemBuilder: (context, index) {
+                          return (index == detailedOffer.offer.items.length - 1)
+                              ? Column(
                                   children: [
                                     Container(
-                                      child: Row(children: [
-                                        Text(
-                                            "${detailedOffer.offer.items[index].title}",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.normal)),
-                                      ]),
-                                    ),
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    color: Colors.grey.shade400,
+                                                    width: 1))),
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                child: Row(children: [
+                                                  Text(
+                                                      "${detailedOffer.offer.items[index].title}",
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight: FontWeight
+                                                              .normal)),
+                                                ]),
+                                              ),
+                                              Container(
+                                                child: Row(children: [
+                                                  Text(
+                                                      "\$${detailedOffer.offer.items[index].price}",
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight: FontWeight
+                                                              .normal)),
+                                                ]),
+                                              ),
+                                            ])),
                                     Container(
-                                      child: Row(children: [
-                                        Text(
-                                            "\$${detailedOffer.offer.items[index].price}",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.normal)),
-                                      ]),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text("Tax: ",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text(
+                                                "\$${((detailedOffer.offer.vat * getTotal()) / 100)}",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.normal)),
+                                          ]),
                                     ),
-                                  ]));
-                    }),
-              ),
-              Container(
-                child: Row(children: [
-                  Text("Detailed Job Description: ",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ]),
-              ),
-              Text(
-                detailedOffer.offer.note,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-            ])),
+                                    ((detailedOffer.offer.discount != 0.0)
+                                        ? Container(
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text("Discount: ",
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  Text(
+                                                      " ${detailedOffer.offer.discount}",
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight: FontWeight
+                                                              .normal)),
+                                                ]),
+                                          )
+                                        : SizedBox()),
+                                    Container(
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text("Total: ",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text(
+                                                "\$${double.parse(detailedOffer.offer.totalEstimation)}",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.normal)),
+                                          ]),
+                                    ),
+                                  ],
+                                )
+                              : Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                              color: Colors.grey.shade400,
+                                              width: 1))),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          child: Row(children: [
+                                            Text(
+                                                "${detailedOffer.offer.items[index].title}",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.normal)),
+                                          ]),
+                                        ),
+                                        Container(
+                                          child: Row(children: [
+                                            Text(
+                                                "\$${detailedOffer.offer.items[index].price}",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.normal)),
+                                          ]),
+                                        ),
+                                      ]));
+                        }),
+                  ),
+                  Container(
+                    child: Row(children: [
+                      Text("Detailed Job Description: ",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    ]),
+                  ),
+                  Text(
+                    detailedOffer.offer.note,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ])),
         CustomButton(
             buttonTitle: "Send Offer",
             callBackFunction: (() {

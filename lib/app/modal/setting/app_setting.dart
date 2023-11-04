@@ -3,7 +3,7 @@ import 'dart:convert';
 class AppSetting {
   bool firstTime;
   AppSetting({
-    required this.firstTime,
+    this.firstTime = true,
   });
 
   Map<String, dynamic> toMap() {

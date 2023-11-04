@@ -8,119 +8,118 @@ import 'package:panda_technician/models/globalModels/description.dart';
 import 'package:panda_technician/models/globalModels/price.dart';
 import 'package:panda_technician/models/globalModels/schedule.dart';
 import 'package:panda_technician/models/globalModels/serviceLocation.dart';
-import 'package:panda_technician/models/offer/SentOffer.dart';
-
-DetailedRequestM detailedRequestMFromJson(String str) => DetailedRequestM.fromJson(json.decode(str));
-
-String detailedRequestMToJson(DetailedRequestM data) => json.encode(data.toJson());
 
 class DetailedRequestM {
-    DetailedRequestM({
-        this.id = "",
-       required this.vehicleId ,
-        this.technicianId = "",
-        this.requestStatus = "",
-      required this.createdAt,
-       required this.schedule,
-       required this.serviceLocation,
-       required this.updatedAt,
-        this.serviceId = "",
-       required this.price,
-     required   this.description,
-        this.customerId = "",
-       required this.customerInfo,
-      required  this.technicianInfo,
-      // required this.sentOffer
-    });
+  String id;
+  List<dynamic> vehicleId;
+  String technicianId;
+  String requestStatus;
+  DateTime createdAt;
+  Schedule schedule;
+  ServiceLocation serviceLocation;
+  DateTime updatedAt;
+  String serviceId;
+  Price price;
+  Description description;
+  String customerId;
+  Info customerInfo;
+  Info technicianInfo;
+  DetailedRequestM({
+    required this.id,
+    required this.vehicleId,
+    required this.technicianId,
+    required this.requestStatus,
+    required this.createdAt,
+    required this.schedule,
+    required this.serviceLocation,
+    required this.updatedAt,
+    required this.serviceId,
+    required this.price,
+    required this.description,
+    required this.customerId,
+    required this.customerInfo,
+    required this.technicianInfo,
+  });
+  // SentOffer sentOffer;
 
-    String id;
-    List<dynamic> vehicleId;
-    String technicianId;
-    String requestStatus;
-    DateTime createdAt;
-    Schedule schedule;
-    ServiceLocation serviceLocation;
-    DateTime updatedAt;
-    String serviceId;
-    Price price;
-    Description description;
-    String customerId;
-    Info customerInfo;
-    Info technicianInfo;
-    // SentOffer sentOffer;
-
-    factory DetailedRequestM.fromJson(Map<String, dynamic> json) => DetailedRequestM(
-        id: json["id"],
-        vehicleId: json["vehicleId"],
-        technicianId: json["technicianId"]?? "",
-        requestStatus: json["requestStatus"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        schedule: Schedule.fromJson(json["schedule"]),
-        serviceLocation: ServiceLocation.fromJson(json["serviceLocation"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        serviceId: json["serviceId"],
-        price: Price.fromJson(json["price"]),
-        description: Description.fromJson(json["description"]),
-        customerId: json["customerId"],
-        customerInfo: Info.fromJson(json["customerInfo"]),
-        technicianInfo: Info.fromJson(json["technicianInfo"]),
-        // sentOffer: SentOffer.fromJson(json["offerDetail"] == null? SentOffer(items: []) : json["offerDetail"].length == 0? SentOffer(items:[]) : json["offerDetail"][0]),
-
-    );
-
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "vehicleId": vehicleId,
-        "technicianId": technicianId,
-        "requestStatus": requestStatus,
-        "createdAt": createdAt.toIso8601String(),
-        "schedule": schedule.toJson(),
-        "serviceLocation": serviceLocation.toJson(),
-        "updatedAt": updatedAt.toIso8601String(),
-        "serviceId": serviceId,
-        "price": price.toJson(),
-        "description": description.toJson(),
-        "customerId": customerId,
-        "customerInfo": customerInfo.toJson(),
-        "technicianInfo": technicianInfo.toJson(),
-        // "offerDetail": sentOffer.toJson()
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'vehicleId': vehicleId,
+      'technicianId': technicianId,
+      'requestStatus': requestStatus,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'schedule': schedule.toJson(),
+      'serviceLocation': serviceLocation.toJson(),
+      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'serviceId': serviceId,
+      'price': price.toJson(),
+      'description': description.toJson(),
+      'customerId': customerId,
+      'customerInfo': customerInfo.toJson(),
+      'technicianInfo': technicianInfo.toJson(),
     };
+  }
+
+  factory DetailedRequestM.fromMap(Map<String, dynamic> map) {
+    return DetailedRequestM(
+      id: map['id'] ?? '',
+      vehicleId: List<dynamic>.from(map['vehicleId']),
+      technicianId: map['technicianId'] ?? '',
+      requestStatus: map['requestStatus'] ?? '',
+      createdAt: DateTime.parse(map['createdAt']),
+      schedule: Schedule.fromJson(map['schedule']),
+      serviceLocation: ServiceLocation.fromJson(map['serviceLocation']),
+      updatedAt: DateTime.parse(map['updatedAt']),
+      serviceId: map['serviceId'] ?? '',
+      price: Price.fromJson(map['price']),
+      description: Description.fromJson(map['description']),
+      customerId: map['customerId'] ?? '',
+      customerInfo: Info.fromJson(map['customerInfo']),
+      technicianInfo: Info.fromJson(map['technicianInfo']),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory DetailedRequestM.fromJson(String source) =>
+      DetailedRequestM.fromMap(json.decode(source));
 }
 
 class Info {
-    Info({
-        this.phoneNumber = "",
-        this.userRole = "",
-        this.subscription = "",
-      required  this.createdAt,
-        this.fullName = "",
-        this.state = "",
-        this.city = "",
-        this.isActive = false,
-        this.userId = "",
-        this.profilePicture = "",
-        required this.updatedAt,
-        this.id = "",
-        this.zipCode =000,
-        this.street = "",
-    });
+  Info({
+    this.phoneNumber = "",
+    this.userRole = "",
+    this.subscription = "",
+    required this.createdAt,
+    this.fullName = "",
+    this.state = "",
+    this.city = "",
+    this.isActive = false,
+    this.userId = "",
+    this.profilePicture = "",
+    required this.updatedAt,
+    this.id = "",
+    this.zipCode = 000,
+    this.street = "",
+  });
 
-    String phoneNumber;
-    String userRole;
-    String subscription;
-    DateTime createdAt;
-    String fullName;
-    String state;
-    String city;
-    bool isActive;
-    String userId;
-    String profilePicture;
-    DateTime updatedAt;
-    String id;
-    int zipCode;
-    String street;
+  String phoneNumber;
+  String userRole;
+  String subscription;
+  DateTime createdAt;
+  String fullName;
+  String state;
+  String city;
+  bool isActive;
+  String userId;
+  String profilePicture;
+  DateTime updatedAt;
+  String id;
+  int zipCode;
+  String street;
 
-    factory Info.fromJson(Map<String, dynamic> json) => Info(
+  factory Info.fromJson(Map<String, dynamic> json) => Info(
         phoneNumber: json["phoneNumber"],
         userRole: json["userRole"],
         subscription: json["subscription"],
@@ -135,9 +134,9 @@ class Info {
         id: json["id"],
         zipCode: json["zipCode"],
         street: json["street"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "phoneNumber": phoneNumber,
         "userRole": userRole,
         "subscription": subscription,
@@ -152,7 +151,5 @@ class Info {
         "id": id,
         "zipCode": zipCode,
         "street": street,
-    };
+      };
 }
-
-

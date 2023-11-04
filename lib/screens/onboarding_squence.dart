@@ -2,8 +2,8 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/services/firstTimeRun.dart';
-import 'auth/LoginScreen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingSlider extends StatefulWidget {
@@ -147,8 +147,7 @@ class _OnboardingSliderState extends State<OnboardingSlider> {
             onPressed: () {
               setFirstTimeLoad();
 
-              Navigator.popAndPushNamed(
-                context,
+              Get.offAndToNamed(
                 "Login",
               );
             },
@@ -166,7 +165,7 @@ class _OnboardingSliderState extends State<OnboardingSlider> {
                   onPressed: () {
                     setFirstTimeLoad();
 
-                    Navigator.pushNamed(context, "Login");
+                    Get.toNamed("Login");
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color.fromARGB(255, 17, 168, 143),

@@ -3,10 +3,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // import 'package:otp_autofill/otp_autofill.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/coutDown.dart';
 import 'package:panda_technician/components/loading.dart';
+import 'package:panda_technician/routes/route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_countdown_timer/countdown.dart';
 import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
@@ -334,7 +336,7 @@ class _SignUpVerificationState extends State<SignUpVerification>
                               prefs.getString("userEmail").toString(),
                               a.text + b.text + c.text + d.text);
                           if (response) {
-                            Navigator.pushNamed(context, "Home");
+                            Get.toNamed(homePage);
                           } else {
                             showPurchaseDialog(
                                 context, "Error Occured", "Wrong OTP");
@@ -363,7 +365,7 @@ class _SignUpVerificationState extends State<SignUpVerification>
                             prefs.getString("userEmail").toString(), context);
 
                         if (response) {
-                          Navigator.pushNamed(context, "Signup");
+                          Get.toNamed(signup);
 
                           showPurchaseDialog(
                               context, "Otp Sent", "Check Your SMS",

@@ -5,7 +5,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:panda_technician/app/modules/job_offer/job_offer.controller.dart';
+import 'package:panda_technician/app/service/app_auth_service.dart';
+import 'package:panda_technician/app/service/app_setting_service.dart';
 import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
@@ -18,24 +22,24 @@ import 'package:panda_technician/models/profile.dart';
 import 'package:panda_technician/models/requests/canceld.dart';
 import 'package:panda_technician/models/requests/detailedRequest.dart';
 import 'package:panda_technician/models/requests/detailedRequestM.dart';
-import 'package:panda_technician/models/requests/requests.dart';
 import 'package:panda_technician/models/auth/signUp.dart';
-import 'package:panda_technician/models/requests/viewDetailRequests.dart';
-import 'package:panda_technician/models/requests/watchRequestDetail.dart';
 import 'package:panda_technician/models/service/service.dart';
 import 'package:panda_technician/models/vehicle/vehicle.dart';
-import 'package:panda_technician/screens/requests/StatusRequest.dart';
+import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/store/profileProvider.dart';
-import '../util/constant.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiHandler {
+  AppSettingService _appSettingService = Get.find<AppSettingService>();
+  JobOfferController _jobOfferController = Get.find<JobOfferController>();
+  AppAuthService _appAuthService = Get.find<AppAuthService>();
   Future<List<BankInfo>> getBankDetail() async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "account/getBankAccount");
+      var url = Uri.parse(
+          _appSettingService.config.baseURL + "/account/getBankAccount");
       final prefs = await SharedPreferences.getInstance();
 
       var token = prefs.getString("apiToken");
@@ -59,8 +63,8 @@ class ApiHandler {
     try {
       print("Is Accepted ");
 
-      var url = Uri.parse(
-          ApiConstants.baseUrl + "offerEstimation/byRquest/$requesetId");
+      var url = Uri.parse(_appSettingService.config.baseURL +
+          "/offerEstimation/byRquest/$requesetId");
       final prefs = await SharedPreferences.getInstance();
 
       var token = prefs.getString("apiToken");
@@ -92,8 +96,8 @@ class ApiHandler {
     try {
       print("Is Acceptedzz: " + requesetId);
 
-      var url = Uri.parse(
-          ApiConstants.baseUrl + "offerEstimation/byRquest/$requesetId");
+      var url = Uri.parse(_appSettingService.config.baseURL +
+          "/offerEstimation/byRquest/$requesetId");
       final prefs = await SharedPreferences.getInstance();
 
       var token = prefs.getString("apiToken");
@@ -119,40 +123,10 @@ class ApiHandler {
     return [];
   }
 
-  Future<List<StatusRequest>?> getTechnicianRequests() async {
-    try {
-      var url = Uri.parse(ApiConstants.baseUrl + "request/technician");
-      final prefs = await SharedPreferences.getInstance();
-
-      var token = prefs.getString("apiToken");
-
-      var response = await http.get(
-        url,
-        headers: <String, String>{
-          'Authorization': 'Bearer $token',
-        },
-      );
-      // if(response.statusCode == 200){
-      print("TOKEN: " + token.toString());
-      print("KKKKK: " + response.body);
-      List<StatusRequest> _model =
-          statusRequestFromJson(json.encode(json.decode(response.body)["data"]))
-              as List<StatusRequest>;
-
-      return _model;
-      // }
-    } catch (e) {
-      print("Error: " + e.toString());
-      print("Line: 153");
-      log(e.toString());
-    }
-    return null;
-  }
-
   Future<List<Canceld>?> getCanceldRequest() async {
     try {
-      var url = Uri.parse(
-          ApiConstants.baseUrl + "canceledByTechnician/byTechnicianId");
+      var url = Uri.parse(_appSettingService.config.baseURL +
+          "/canceledByTechnician/byTechnicianId");
       final prefs = await SharedPreferences.getInstance();
 
       var token = prefs.getString("apiToken");
@@ -166,8 +140,7 @@ class ApiHandler {
       // if(response.statusCode == 200){
       print("iiiiiiiiiiiiiiiiiiiiiii: " + response.body.toString());
       List<Canceld> _model =
-          canceldFromJson(json.encode(json.decode(response.body)["Items"]))
-              as List<Canceld>;
+          canceldFromJson(json.encode(json.decode(response.body)["Items"]));
 
       return _model;
       // }
@@ -181,7 +154,8 @@ class ApiHandler {
 
   Future<int> getOfferCount() async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "request/offers");
+      var url =
+          Uri.parse(_appSettingService.config.baseURL + "/request/offers");
       final prefs = await SharedPreferences.getInstance();
 
       var token = prefs.getString("apiToken");
@@ -194,7 +168,7 @@ class ApiHandler {
       );
       // if(response.statusCode == 200){
 
-      // List<RequestsM> _model = RequestsMFromJson(json.encode(json.decode(response.body)["data"])) as List<RequestsM>;
+      // List<ServiceRequestModel> _model = ServiceRequestModelFromJson(json.encode(json.decode(response.body)["data"])) as List<ServiceRequestModel>;
 
       return json.decode(response.body)["Count"];
       // }
@@ -208,7 +182,8 @@ class ApiHandler {
 
   Future<int> getSpecificOfferCount() async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "request/technician/count");
+      var url = Uri.parse(
+          _appSettingService.config.baseURL + "/request/technician/count");
       final prefs = await SharedPreferences.getInstance();
 
       var token = prefs.getString("apiToken");
@@ -221,7 +196,7 @@ class ApiHandler {
       );
       // if(response.statusCode == 200){
 
-      // List<RequestsM> _model = RequestsMFromJson(json.encode(json.decode(response.body)["data"])) as List<RequestsM>;
+      // List<ServiceRequestModel> _model = ServiceRequestModelFromJson(json.encode(json.decode(response.body)["data"])) as List<ServiceRequestModel>;
 
       return json.decode(response.body)["Count"];
       // }
@@ -233,48 +208,9 @@ class ApiHandler {
     return 0;
   }
 
-  Future<List<RequestsM>?> getRequests() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    String fcmToken = prefs.getString("fcmToken").toString();
-
-//  FirebaseMessaging.instance.getToken().then((token) async {
-//         print("MY TOKEN: " + token.toString());
-//         fcmToken = await getTokenFcmFast();
-
-// });
-    print("FFFF: " + fcmToken);
-    try {
-      var url = Uri.parse(ApiConstants.baseUrl + "/request/all");
-      final prefs = await SharedPreferences.getInstance();
-
-      var token = prefs.getString("apiToken");
-
-      var response = await http.get(
-        url,
-        headers: <String, String>{
-          'Authorization': 'Bearer $token',
-        },
-      );
-      // if(response.statusCode == 200){
-
-      List<RequestsM> _model =
-          RequestsMFromJson(json.encode(json.decode(response.body)["data"]))
-              as List<RequestsM>;
-
-      return _model;
-      // }
-    } catch (e) {
-      print("Error: " + e.toString());
-      print("Line: 277");
-      log(e.toString());
-    }
-    return null;
-  }
-
   Future<ProfileModel> getProfile() async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "/auth/profile");
+      var url = Uri.parse(_appSettingService.config.baseURL + "/auth/profile");
       final prefs = await SharedPreferences.getInstance();
 
       var token = prefs.getString("apiToken");
@@ -287,9 +223,8 @@ class ApiHandler {
       );
 
       print("ABCD: " + response.body);
-      ProfileModel _model = profileModelFromJson(json.encode(
-              json.decode(response.body)["data"]["personalInformation"]))
-          as ProfileModel;
+      ProfileModel _model = profileModelFromJson(json
+          .encode(json.decode(response.body)["data"]["personalInformation"]));
 
       return _model;
     } catch (e) {
@@ -301,7 +236,8 @@ class ApiHandler {
 
   deleteAccount(String email, context) async {
     try {
-      var url = Uri.parse("${ApiConstants.baseUrl}auth/removeUser/$email");
+      var url = Uri.parse(
+          "${_appSettingService.config.baseURL}/auth/removeUser/$email");
 
       final prefs = await SharedPreferences.getInstance();
 
@@ -320,11 +256,11 @@ class ApiHandler {
             (() async {
           final prefs = await SharedPreferences.getInstance();
           prefs.remove("apiToken");
-          Navigator.pushNamed(context, "Login");
+          Get.toNamed(loginPage);
         }), (() async {
           final prefs = await SharedPreferences.getInstance();
           prefs.remove("apiToken");
-          Navigator.pushNamed(context, "Login");
+          Get.toNamed(loginPage);
         }));
       }
     } catch (e) {
@@ -335,7 +271,8 @@ class ApiHandler {
 
   Future<Service> getService(String serviceId) async {
     try {
-      var url = Uri.parse("${ApiConstants.baseUrl}/service/$serviceId");
+      var url =
+          Uri.parse("${_appSettingService.config.baseURL}/service/$serviceId");
 
       final prefs = await SharedPreferences.getInstance();
 
@@ -367,7 +304,8 @@ class ApiHandler {
 
   Future<Vehicle> getVehicle(String vehicleId) async {
     try {
-      var url = Uri.parse("${ApiConstants.baseUrl}/vehicle/$vehicleId");
+      var url =
+          Uri.parse("${_appSettingService.config.baseURL}/vehicle/$vehicleId");
 
       final prefs = await SharedPreferences.getInstance();
 
@@ -396,7 +334,9 @@ class ApiHandler {
   updateJobStatus(String requestId, context, String newStatus,
       Function updateStatus) async {
     try {
-      var url = Uri.parse("${ApiConstants.baseUrl}request/$requestId");
+      //TODO: change to appsync
+      var url =
+          Uri.parse("${_appSettingService.config.baseURL}/request/$requestId");
 
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
@@ -408,9 +348,8 @@ class ApiHandler {
             'Authorization': 'Bearer $token',
           },
           body: jsonEncode({"requestStatus": newStatus}));
-
       if (response.statusCode == 200) {
-        Navigator.pop(context);
+        Get.back();
 
         updateStatus();
       } else {
@@ -425,7 +364,8 @@ class ApiHandler {
 
   cancelJob(String requestId, context, Function cancelUpdateUI) async {
     try {
-      var url = Uri.parse("${ApiConstants.baseUrl}request/$requestId");
+      var url =
+          Uri.parse("${_appSettingService.config.baseURL}/request/$requestId");
 
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
@@ -439,8 +379,8 @@ class ApiHandler {
           body: jsonEncode({"requestStatus": "CANCELED"}));
 
       if (response.statusCode == 200) {
-        Navigator.pop(context);
-        Navigator.pop(context);
+        Get.back();
+        Get.back();
         showPurchaseDialog(context, "Success", "Offer removed Successfully",
             isApiCall: false);
 
@@ -455,132 +395,10 @@ class ApiHandler {
     }
   }
 
-  jobDetailed(String requestId, context, RequestsM request) async {
-    try {
-      var url = Uri.parse("${ApiConstants.baseUrl}request/$requestId");
-
-      final prefs = await SharedPreferences.getInstance();
-      var token = prefs.getString("apiToken");
-
-      Loading(context);
-      var response = await http.get(
-        url,
-        headers: <String, String>{
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      print("REzzQ: " + requestId);
-      print("KKKK: " + response.body);
-//detailedRequestDetailFromJson
-      DetailedRequestDetail detailedRequest = detailedRequestDetailFromJson(
-          json.encode(json.decode(response.body)["data"]));
-
-      if (response.statusCode == 200) {
-        Vehicle vehicles = await ApiHandler().getVehicle(request.vehicleId[0]);
-        Service service = await ApiHandler().getService(request.serviceId);
-
-        Navigator.pop(context);
-        Navigator.pushNamed(context, "ViewJob",
-            arguments: watchDetailedRequest(
-                request: detailedRequest, vehicle: vehicles, service: service));
-      } else {
-        showPurchaseDialog(context, "Error", "Somthing Went Wrong",
-            isApiCall: true);
-      }
-    } catch (e) {
-      print("Error: " + e.toString());
-      print("Line: 501");
-    }
-  }
-
-  jobSpecificDetailed(String requestId, context, StatusRequest request) async {
-    try {
-      var url = Uri.parse("${ApiConstants.baseUrl}request/$requestId");
-
-      final prefs = await SharedPreferences.getInstance();
-      var token = prefs.getString("apiToken");
-
-      Loading(context);
-      var response = await http.get(
-        url,
-        headers: <String, String>{
-          'Authorization': 'Bearer $token',
-        },
-      );
-      print("REQzz: " + requestId);
-
-      print("KKKK: " + response.body);
-//detailedRequestDetailFromJson
-      DetailedRequestDetail detailedRequest = detailedRequestDetailFromJson(
-          json.encode(json.decode(response.body)["data"]));
-
-      if (response.statusCode == 200) {
-        Vehicle vehicles = await ApiHandler().getVehicle(request.vehicleId[0]);
-        Service service = await ApiHandler().getService(request.serviceId);
-
-        Navigator.pop(context);
-        Navigator.pushNamed(context, "ViewJob",
-            arguments: watchDetailedRequest(
-                request: detailedRequest, vehicle: vehicles, service: service));
-      } else {
-        showPurchaseDialog(context, "Error", "Somthing Went Wrong",
-            isApiCall: true);
-      }
-    } catch (e) {
-      print("Error: " + e.toString());
-      print("Line: 539");
-    }
-  }
-
-  AcceptJob(String requestId, context, DetailedRequestDetail request) async {
-    try {
-      var url = Uri.parse("${ApiConstants.baseUrl}request/accept/$requestId");
-
-      final prefs = await SharedPreferences.getInstance();
-      var token = prefs.getString("apiToken");
-
-      Loading(context);
-      var response = await http.patch(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-      print("dfdsdKKKKK: " + response.statusCode.toString());
-      print("asfdsfdsdf: " + response.body.toString());
-
-      if (response.statusCode == 200) {
-        DetailedRequestM detailedRequest = detailedRequestMFromJson(
-            json.encode(json.decode(response.body)["data"]));
-
-        Vehicle vehicles = await ApiHandler().getVehicle(request.vehicleId[0]);
-        Service service = await ApiHandler().getService(request.serviceId);
-
-        Navigator.pop(context);
-        Navigator.pushNamed(context, "JobDetail",
-            arguments: DetailedRequest(
-                request: detailedRequest,
-                vehicle: vehicles,
-                service: service,
-                estimation: Offer(items: [])));
-      } else if (response.statusCode == 409) {
-        showPurchaseDialog(context, "Error", "You are already on duty!",
-            isApiCall: true);
-      } else {
-        showPurchaseDialog(context, "Error", "Somthing Went Wrong",
-            isApiCall: true);
-      }
-    } catch (e) {
-      print("Error: " + e.toString());
-      print("Line: 585");
-    }
-  }
-
   openStartedJob(String requestId, context) async {
     try {
-      var url = Uri.parse("${ApiConstants.baseUrl}request/$requestId");
+      var url =
+          Uri.parse("${_appSettingService.config.baseURL}/request/$requestId");
 
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
@@ -594,8 +412,8 @@ class ApiHandler {
       );
 
 //detailedRequestDetailFromJson
-      DetailedRequestM detailedRequest = detailedRequestMFromJson(
-          json.encode(json.decode(response.body)["data"]));
+      DetailedRequestM detailedRequest =
+          DetailedRequestM.fromMap(json.decode(response.body)["data"]);
 
       if (response.statusCode == 200) {
         Vehicle vehicles =
@@ -603,8 +421,8 @@ class ApiHandler {
         Service service =
             await ApiHandler().getService(detailedRequest.serviceId);
 
-        Navigator.pop(context);
-        Navigator.pushNamed(context, "JobDetail",
+        Get.back();
+        Get.toNamed(jobDetail,
             arguments: DetailedRequest(
                 request: detailedRequest,
                 vehicle: vehicles,
@@ -622,7 +440,8 @@ class ApiHandler {
 
   changePassword(String currentPassword, String newPassword, context) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "auth/changePassword");
+      var url =
+          Uri.parse(_appSettingService.config.baseURL + "/auth/changePassword");
 
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
@@ -638,12 +457,12 @@ class ApiHandler {
             "newPassword": newPassword
           }));
       if (response.statusCode == 201) {
-        Navigator.pop(context);
+        Get.back();
 
         showPurchaseDialog(context, "Success", "Password Changed Successfully",
             isApiCall: true);
       } else {
-        Navigator.pop(context);
+        Get.back();
 
         showPurchaseDialog(
             context, "Error", json.decode(response.body)["message"],
@@ -657,7 +476,8 @@ class ApiHandler {
 
   resetPassword(String email, String newPassword, String otp) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "auth/resetPassword");
+      var url =
+          Uri.parse(_appSettingService.config.baseURL + "/auth/resetPassword");
       var response = await http.patch(url,
           headers: <String, String>{'Content-Type': 'application/json'},
           body: jsonEncode({
@@ -682,7 +502,7 @@ class ApiHandler {
 
   sendSupportEmail(String email, String message, context) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "contactUs/");
+      var url = Uri.parse(_appSettingService.config.baseURL + "/contactUs/");
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
 
@@ -699,13 +519,13 @@ class ApiHandler {
           );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        Navigator.pop(context);
+        Get.back();
         // DialogBox(context, title, message, negativeButton, positiveButton, negativeCallBack, positiveCallBack)
         DialogBox(context, "Success", "Email sent to Support successfully",
             "Cancel", "Ok", (() {
-          Navigator.pop(context);
+          Get.back();
         }), (() {
-          Navigator.pop(context);
+          Get.back();
         }));
       } else {
         return false;
@@ -726,7 +546,7 @@ class ApiHandler {
           "feedback": feedback
         }));
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "/rating/send");
+      var url = Uri.parse(_appSettingService.config.baseURL + "/rating/send");
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
 
@@ -749,7 +569,7 @@ class ApiHandler {
       print("StutsCode: " + response.statusCode.toString());
       print("body: " + response.body);
       if (response.statusCode == 201 || response.statusCode == 200) {
-        Navigator.pop(context);
+        Get.back();
         // DialogBox(context, title, message, negativeButton, positiveButton, negativeCallBack, positiveCallBack)
         return true;
       } else {
@@ -765,7 +585,8 @@ class ApiHandler {
   changeStatus(
       double latitude, double longitude, bool status, context, callBack) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "users/technician/status");
+      var url = Uri.parse(
+          _appSettingService.config.baseURL + "/users/technician/status");
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
 
@@ -778,10 +599,7 @@ class ApiHandler {
             "latitude": latitude,
             "longitude": longitude,
             "isOnline": status
-          })
-
-          // })
-          );
+          }));
 
       print("RRE: " +
           jsonEncode({
@@ -808,7 +626,7 @@ class ApiHandler {
 
   sendOtp(String email, context) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "auth/sendOTP");
+      var url = Uri.parse(_appSettingService.config.baseURL + "/auth/sendOTP");
       var response = await http.post(url,
           headers: <String, String>{'Content-Type': 'application/json'},
           body: jsonEncode({
@@ -854,15 +672,11 @@ class ApiHandler {
   login(String email, String password) async {
     try {
       String fcmToken = "";
-// FirebaseMessaging.instance.getToken().then((token) async {
-      // print("MY TOKEN: " + token.toString());
-      // fcmToken = await getTokenFcmFast();
-
       final prefs = await SharedPreferences.getInstance();
 
       fcmToken = prefs.getString("fcmToken").toString();
       print("AKL: " + fcmToken);
-      var url = Uri.parse(ApiConstants.baseUrl + "auth/login");
+      var url = Uri.parse(_appSettingService.config.baseURL + "/auth/login");
       var response = await http.post(url,
           headers: <String, String>{'Content-Type': 'application/json'},
           body: jsonEncode({
@@ -875,25 +689,23 @@ class ApiHandler {
           );
 
       if (response.statusCode == 200) {
-        prefs.setString("apiToken", json.decode(response.body)["token"]);
-// prefs.setString("userId", json.decode(response.body)["userID"]);
-// prefs.setString("userEmail", requestBody.email);
+        var data = json.decode(response.body);
+        prefs.setString("apiToken", data["token"]);
+        _appAuthService.signin(data["data"], data["token"]);
+        //INFO: Start listening for job request
+        _jobOfferController.listenForRequestUpdate();
         return true;
       } else {
         return false;
       }
-      return false;
-
-      // });
     } catch (e) {
       print("Error: " + e.toString());
-      print("Line: 899");
     }
   }
 
   verifyAccount(String email, String verificationCode) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "auth/verify");
+      var url = Uri.parse(_appSettingService.config.baseURL + "/auth/verify");
       var response = await http.post(url,
           headers: <String, String>{'Content-Type': 'application/json'},
           body: jsonEncode({
@@ -922,8 +734,9 @@ class ApiHandler {
 
   Future<List<RejectedOffer>?> getMyEstimation(String email) async {
     try {
-      var url =
-          Uri.parse(ApiConstants.baseUrl + "offerEstimation/bySender/" + email);
+      var url = Uri.parse(_appSettingService.config.baseURL +
+          "/offerEstimation/bySender/" +
+          email);
       final prefs = await SharedPreferences.getInstance();
 
       var token = prefs.getString("apiToken");
@@ -947,7 +760,8 @@ class ApiHandler {
 
   sendOffer(Offer offer, context, DetailedRequest detailed) async {
     try {
-      var url = Uri.parse("${ApiConstants.baseUrl}offerEstimation/send");
+      var url = Uri.parse(
+          "${_appSettingService.config.baseURL}/offerEstimation/send");
 
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
@@ -961,7 +775,7 @@ class ApiHandler {
           body: jsonEncode(offer.toJson()));
 
       if (response.statusCode == 201) {
-        Navigator.pushNamed(context, "JobDetail", arguments: detailed);
+        Get.toNamed(jobDetail, arguments: detailed);
       } else {
         showPurchaseDialog(context, "Error", "Something went wrong",
             isApiCall: true);
@@ -975,7 +789,8 @@ class ApiHandler {
   updateOffer(Offer offer, context, DetailedRequest detailed) async {
     try {
       print("asdfsdf " + offer.id);
-      var url = Uri.parse("${ApiConstants.baseUrl}offerEstimation/${offer.id}");
+      var url = Uri.parse(
+          "${_appSettingService.config.baseURL}/offerEstimation/${offer.id}");
 
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
@@ -992,9 +807,9 @@ class ApiHandler {
       if (response.statusCode == 200) {
         DialogBox(context, "Success", "Updated Successfully", "Cancel", "Ok",
             (() {
-          Navigator.pushNamed(context, "JobDetail", arguments: detailed);
+          Get.toNamed(jobDetail, arguments: detailed);
         }), (() {
-          Navigator.pushNamed(context, "JobDetail", arguments: detailed);
+          Get.toNamed(jobDetail, arguments: detailed);
         }));
       } else {
         showPurchaseDialog(context, "Error", "Something went wrong",
@@ -1008,7 +823,7 @@ class ApiHandler {
 
   updateProfile(SignUp profile, context, email) async {
     try {
-      var url = Uri.parse("${ApiConstants.baseUrl}users/${email}");
+      var url = Uri.parse("${_appSettingService.config.baseURL}/users/$email");
 
       print("UIUIUI: " + json.encode(profile));
 
@@ -1024,14 +839,14 @@ class ApiHandler {
           body: jsonEncode(profile.toJson()));
 
       if (response.statusCode == 200) {
-        ProfileModel profileDetail = (await ApiHandler().getProfile())!;
+        ProfileModel profileDetail = await ApiHandler().getProfile();
         Provider.of<ProfileProvider>(context, listen: false)
             .changeProfileProvider(profileDetail);
 
         DialogBox(context, "Success", "Updated", "Cancel", "Ok", (() {
-          Navigator.popAndPushNamed(context, "Profile");
+          Get.offAndToNamed(profilePage);
         }), (() {
-          Navigator.popAndPushNamed(context, "Profile");
+          Get.offAndToNamed(profilePage);
         }));
       } else {
         showPurchaseDialog(context, "Error", "Something went wrong",
@@ -1055,7 +870,7 @@ class ApiHandler {
         print("AKA :" + requestBody.phoneNumber);
         print("BODY: " + json.encode(requestBody));
 
-        var url = Uri.parse(ApiConstants.baseUrl + "auth/signup");
+        var url = Uri.parse(_appSettingService.config.baseURL + "/auth/signup");
         var response = await http.post(url,
             headers: <String, String>{'Content-Type': 'application/json'},
             body: jsonEncode(requestBody.toJson())
@@ -1072,7 +887,7 @@ class ApiHandler {
             prefs.setString("userId", json.decode(response.body)["userID"]);
             prefs.setString("userEmail", requestBody.email);
 
-            Navigator.popAndPushNamed(context, "Signup");
+            Get.offAndToNamed(signup);
           } else {
             //todo: error message add here
           }
@@ -1094,7 +909,7 @@ class ApiHandler {
 
   fileUpload(String filePath) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "files/images");
+      var url = Uri.parse(_appSettingService.config.baseURL + "/files/images");
       var request = http.MultipartRequest(
         'POST',
         url,
@@ -1114,7 +929,8 @@ class ApiHandler {
 
   w9Upload(String filePath) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "files/documents");
+      var url =
+          Uri.parse(_appSettingService.config.baseURL + "/files/documents");
       var request = http.MultipartRequest(
         'POST',
         url,
@@ -1135,7 +951,8 @@ class ApiHandler {
   void addBankInfo(String w9uri, String bankName, String accountNumber,
       String routingNumber, context) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "account/addBankAccount/");
+      var url = Uri.parse(
+          _appSettingService.config.baseURL + "/account/addBankAccount/");
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
 
@@ -1166,15 +983,15 @@ class ApiHandler {
       print("KKKKK: " + response.body);
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        Navigator.pop(context);
+        Get.back();
         // DialogBox(context, title, message, negativeButton, positiveButton, negativeCallBack, positiveCallBack)
         DialogBox(context, "Success", "Bank Information Added Successfully",
             "Cancel", "Ok", (() {
-          Navigator.pop(context);
-          Navigator.popAndPushNamed(context, "Profile");
+          Get.back();
+          Get.offAndToNamed(profilePage);
         }), (() {
-          Navigator.pop(context);
-          Navigator.popAndPushNamed(context, "Profile");
+          Get.back();
+          Get.offAndToNamed(profilePage);
         }));
       } else {}
     } catch (e) {
@@ -1185,7 +1002,8 @@ class ApiHandler {
 
   reschedule(Schedule schedule, String requestId, context) async {
     try {
-      var url = Uri.parse("${ApiConstants.baseUrl}request/$requestId");
+      var url =
+          Uri.parse("${_appSettingService.config.baseURL}/request/$requestId");
 
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
@@ -1202,58 +1020,12 @@ class ApiHandler {
           }));
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        Navigator.pop(context);
+        Get.back();
         DialogBox(context, "Message", "Request Is Rescheduled", "cancel", "ok",
             (() {
-          Navigator.pushNamed(context, "Requests");
+          Get.toNamed(requests);
         }), (() {
-          Navigator.pushNamed(context, "Requests");
-        }));
-      } else {
-        showPurchaseDialog(context, "Error", "Something went wrong",
-            isApiCall: true);
-      }
-    } catch (e) {
-      print("EE: " + e.toString());
-    }
-  }
-
-  void rejectJob(
-      String id, String id2, String customerId, BuildContext context) async {
-    try {
-      var url = Uri.parse("${ApiConstants.baseUrl}canceledByTechnician/");
-
-      final prefs = await SharedPreferences.getInstance();
-      var token = prefs.getString("apiToken");
-
-      Loading(context);
-      var response = await http.post(url,
-          headers: <String, String>{
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-          body: jsonEncode({
-            "requestId": id,
-            "technicianId": id2,
-            "customerId": customerId
-          }));
-
-//         print("SENT::: " + jsonEncode({
-//     "requestId": id,
-//     "technicianId": id2,
-//     "customerId": customerId
-// }));
-      // print("UUUUUUUU: " + response.body);
-      // print("CCCCCCCCC: "+ response.statusCode.toString());
-
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        Navigator.pop(context);
-        DialogBox(
-            context, "Success", "Successfully Rejected Job", "Cancel", "Ok",
-            (() {
-          Navigator.popAndPushNamed(context, "Offers");
-        }), (() {
-          Navigator.popAndPushNamed(context, "Offers");
+          Get.toNamed(requests);
         }));
       } else {
         showPurchaseDialog(context, "Error", "Something went wrong",
@@ -1267,7 +1039,8 @@ class ApiHandler {
   void updateBankInfo(String wwwi, String bankName, String accountNumber,
       String routingNumber, BuildContext context) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + "account/updateBankAccount/");
+      var url = Uri.parse(
+          _appSettingService.config.baseURL + "/account/updateBankAccount/");
       final prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("apiToken");
 
@@ -1296,24 +1069,24 @@ class ApiHandler {
       print("EEEEEE: " + response.body);
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        Navigator.pop(context);
+        Get.back();
         // DialogBox(context, title, message, negativeButton, positiveButton, negativeCallBack, positiveCallBack)
         DialogBox(context, "Success", "Bank Information Updated Successfully",
             "Cancel", "Ok", (() {
-          Navigator.pop(context);
-          Navigator.pop(context);
-          Navigator.popAndPushNamed(context, "Profile");
+          Get.back();
+          Get.back();
+          Get.offAndToNamed(profilePage);
         }), (() {
-          Navigator.pop(context);
-          Navigator.popAndPushNamed(context, "Profile");
+          Get.back();
+          Get.offAndToNamed(profilePage);
         }));
       } else {
-        Navigator.pop(context);
+        Get.back();
         DialogBox(context, "Error", "Something went wrong", "Cancel", "Ok",
             (() {
-          Navigator.pop(context);
+          Get.back();
         }), (() {
-          Navigator.pop(context);
+          Get.back();
         }));
       }
     } catch (e) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void showPurchaseDialog(BuildContext context, String title, String message,
-    {bool isApiCall: true, bool isOtp: false, isVerify: false
-    }) {
+    {bool isApiCall: true, bool isOtp: false, isVerify: false}) {
   showDialog(
       context: context,
       barrierDismissible:
@@ -23,18 +23,17 @@ void showPurchaseDialog(BuildContext context, String title, String message,
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                   FocusScope.of(context).unfocus();
-                  if(isOtp){
-                    Navigator.pushNamed(context, "SingUp");
+                  if (isOtp) {
+                    Get.toNamed("SingUp");
                   }
-                  if(isVerify){
-                    Navigator.pushNamed(context, "Verification");
+                  if (isVerify) {
+                    Get.toNamed("Verification");
                   }
-
                 } else {
                   Navigator.of(context).pop();
                   FocusScope.of(context).unfocus();
- if(isOtp){
-                    Navigator.pushNamed(context, "SingUp");
+                  if (isOtp) {
+                    Get.toNamed("SingUp");
                   }
                 }
               }, //closes popup
@@ -44,6 +43,6 @@ void showPurchaseDialog(BuildContext context, String title, String message,
       });
 }
 
- bool test(){
-return true;
+bool test() {
+  return true;
 }

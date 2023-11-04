@@ -1,13 +1,14 @@
 import 'dart:convert';
 
-List<RequestsModel> requestsFromJson(String str) => List<RequestsModel>.from(
-    json.decode(str).map((x) => RequestsModel.fromJson(x)));
+List<ServiceRequestModelodel> requestsFromJson(String str) =>
+    List<ServiceRequestModelodel>.from(
+        json.decode(str).map((x) => ServiceRequestModelodel.fromJson(x)));
 
-String requestsToJson(List<RequestsModel> data) =>
+String requestsToJson(List<ServiceRequestModelodel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class RequestsModel {
-  RequestsModel({
+class ServiceRequestModelodel {
+  ServiceRequestModelodel({
     this.id = 0,
     this.date = "",
     this.serviceType = "",
@@ -27,7 +28,8 @@ class RequestsModel {
   String status;
   int price;
 
-  factory RequestsModel.fromJson(Map<String, dynamic> json) => RequestsModel(
+  factory ServiceRequestModelodel.fromJson(Map<String, dynamic> json) =>
+      ServiceRequestModelodel(
         id: json["id"],
         date: json["date"],
         serviceType: json["serviceType"],

@@ -45,7 +45,7 @@ class BaseController extends GetxController {
     // if (ConfigReader.showDevExceptions) {
     //   message += " $error";
     // }
-
-    DialogHelper.showGetXError(message);
+    //TODO: uncomment
+    // DialogHelper.showGetXError(message);
   }
 }

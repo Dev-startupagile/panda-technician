@@ -1,10 +1,11 @@
 // ignore_for_file: depend_on_referenced_packages, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
 import 'package:panda_technician/components/loading.dart';
-import 'package:panda_technician/screens/auth/verificationScreen.dart';
+import 'package:panda_technician/routes/route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
@@ -76,17 +77,12 @@ class _ForgetPasswordState extends State<ForgetPassword>
                 Loading(context);
                 final prefs = await SharedPreferences.getInstance();
                 prefs.setString("userEmail", email);
-                var response = await ApiHandler().sendOtp(email,context);
+                var response = await ApiHandler().sendOtp(email, context);
 
                 if (response) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const VerficationScreen()),
-                  );
+                  Get.toNamed(verification);
                 } else {
-                  showPurchaseDialog(context, "Error Occur",
-                      "User Not Found");
+                  showPurchaseDialog(context, "Error Occur", "User Not Found");
                 }
               },
               child: const Text(

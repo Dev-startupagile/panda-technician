@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 
 import 'package:panda_technician/components/tags/singleTag.dart';
 import 'package:panda_technician/models/profile.dart';
+import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/store/StateProvider.dart';
 import 'package:panda_technician/store/profileProvider.dart';
 import 'package:provider/provider.dart';
@@ -72,13 +74,13 @@ class _SettingsState extends State<Settings> {
                       var response =
                           await ApiHandler().sendOtp(profile.id, context);
                       if (response) {
-                        Navigator.pushNamed(context, "EmailVerify");
+                        Get.toNamed(emailVerify);
                       } else {
                         DialogBox(context, "Error", "Something Went Wrong",
                             "Cancel", "Ok", (() {
-                          Navigator.pop(context);
+                          Get.back();
                         }), (() {
-                          Navigator.pop(context);
+                          Get.back();
                         }));
                       }
                     })),
@@ -93,7 +95,7 @@ class _SettingsState extends State<Settings> {
                             "Are you sure you want to delete your account",
                             "No",
                             "Yes", (() {
-                          Navigator.pop(context);
+                          Get.back();
                         }), (() {
                           ApiHandler().deleteAccount(profile.id, context);
                         }));

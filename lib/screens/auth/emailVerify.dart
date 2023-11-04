@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/coutDown.dart';
 import 'package:panda_technician/components/loading.dart';
@@ -243,7 +244,7 @@ class _EmailVerifyState extends State<EmailVerify>
                       var response = await ApiHandler().verifyAccount(
                           profile.id, a.text + b.text + c.text + d.text);
                       if (response) {
-                        Navigator.popAndPushNamed(context, "Profile");
+                        Get.offAndToNamed("Profile");
                       } else {
                         showPurchaseDialog(
                             context, "Error Occured", "Wrong OTP");
@@ -272,7 +273,7 @@ class _EmailVerifyState extends State<EmailVerify>
                         prefs.getString("userEmail").toString(), context);
 
                     if (response) {
-                      Navigator.pushNamed(context, "Signup");
+                      Get.toNamed("Signup");
 
                       showPurchaseDialog(
                           context, "Otp Sent", "Check Your Email",

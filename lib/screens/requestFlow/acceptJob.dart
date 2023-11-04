@@ -5,46 +5,33 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:panda_technician/components/flow/ProgressTracker.dart';
 import 'package:panda_technician/components/flow/ratingCard.dart';
-import 'package:panda_technician/components/globalComponents/RatingCard.dart';
-import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
 import 'package:panda_technician/components/globalComponents/customButton.dart';
 import 'package:panda_technician/components/globalComponents/displayImage.dart';
-import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
 import 'package:panda_technician/components/imageComponents/curvedImage.dart';
-import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/messageComponents/centredMessage.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/models/DetailedOffer.dart';
-import 'package:panda_technician/models/RequestsModel.dart';
 import 'package:panda_technician/models/globalModels/schedule.dart';
 import 'package:panda_technician/models/offer.dart';
 import 'package:panda_technician/models/offer/SentOffer.dart';
-import 'package:panda_technician/models/profile.dart';
 import 'package:panda_technician/models/requests/detailedRequest.dart';
 import 'package:panda_technician/models/requests/detailedRequestM.dart';
-import 'package:panda_technician/models/requests/requests.dart';
 import 'package:panda_technician/models/service/service.dart';
 import 'package:panda_technician/models/vehicle/vehicle.dart';
-import 'package:panda_technician/screens/createOffer.dart';
-import 'package:panda_technician/screens/profile/profile.dart';
+import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/services/serviceDate.dart';
 import 'package:panda_technician/services/serviceMoney.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:panda_technician/services/serviceLocation.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 class AcceptJob extends StatefulWidget {
-  AcceptJob({super.key, required this.arguments});
-  DetailedRequest arguments;
-  // int statusIndex;
-
+  AcceptJob({super.key});
   @override
   State<AcceptJob> createState() => _AcceptJobState();
 }
@@ -70,35 +57,36 @@ class _AcceptJobState extends State<AcceptJob> {
   String comment = "";
   double rating = 0;
   String feedBack = "";
+  late DetailedRequest arguments;
 
   @override
   void initState() {
     super.initState();
     // Loading(context);
+    arguments = Get.arguments as DetailedRequest;
 
     newSchedule = Schedule(
         date: DateTime.now().toIso8601String(),
         time: DateTime.now().toIso8601String());
-    request = widget.arguments.request;
-    vehicle = widget.arguments.vehicle;
-    estimation = widget.arguments.estimation;
-    service = widget.arguments.service;
+    request = arguments.request;
+    vehicle = arguments.vehicle;
+    estimation = arguments.estimation;
+    service = arguments.service;
     isAccepted = false;
     modalShowed = false;
     isAlreadyAccepted = false;
     feedBack = "";
-    statusIndex = widget.arguments.request.requestStatus == "ACCEPTED"
+    statusIndex = arguments.request.requestStatus == "ACCEPTED"
         ? 0
-        : widget.arguments.request.requestStatus == "ON_MY_WAY"
+        : arguments.request.requestStatus == "ON_MY_WAY"
             ? 1
-            : widget.arguments.request.requestStatus == "ARRIVED"
+            : arguments.request.requestStatus == "ARRIVED"
                 ? 2
-                : widget.arguments.request.requestStatus == "COMPLETED"
+                : arguments.request.requestStatus == "COMPLETED"
                     ? 4
-                    : widget.arguments.request.requestStatus ==
-                            "SERVICE_UNDERWAY"
+                    : arguments.request.requestStatus == "SERVICE_UNDERWAY"
                         ? 9
-                        : widget.arguments.request.requestStatus == "ESTIMATED"
+                        : arguments.request.requestStatus == "ESTIMATED"
                             ? 5
                             : 0;
     // _controller = CalendarController();
@@ -111,8 +99,8 @@ class _AcceptJobState extends State<AcceptJob> {
     timer = Timer.periodic(
         const Duration(seconds: 30),
         (Timer t) => {
-              if (!widget.arguments.estimation.isApproved &&
-                  !widget.arguments.estimation.isRejected)
+              if (!arguments.estimation.isApproved &&
+                  !arguments.estimation.isRejected)
                 {isAcceptedEstimation()}
             });
     // timer = Future.delayed(
@@ -121,8 +109,8 @@ class _AcceptJobState extends State<AcceptJob> {
 
   getAreaName() async {
     List name = jsonDecode(await ApiHandler().getLocationName(
-        widget.arguments.request.serviceLocation.latitude,
-        widget.arguments.request.serviceLocation.longitude))["results"];
+        arguments.request.serviceLocation.latitude,
+        arguments.request.serviceLocation.longitude))["results"];
     if (name.length > 0) {
       setState(() {
         areaName = name[0]["formatted_address"];
@@ -212,17 +200,17 @@ class _AcceptJobState extends State<AcceptJob> {
                         buttonTitle: "Send Feedback",
                         callBackFunction: (() async {
                           await ApiHandler().sendRating(
-                              widget.arguments.request.customerId,
+                              arguments.request.customerId,
                               rating,
-                              widget.arguments.request.id,
+                              arguments.request.id,
                               feedBack,
                               context);
-                          Navigator.popAndPushNamed(context, "Home");
+                          Get.offAndToNamed(homePage);
                         })),
                     CustomButton(
                         buttonTitle: "Cancel",
                         callBackFunction: (() {
-                          Navigator.popAndPushNamed(context, "Home");
+                          Get.offAndToNamed(homePage);
                         }))
                     // StarRating(color: Color.fromARGB(250, 175, 9, 9),rating: 4.5, onRatingChanged: (double rating) {  }, )
                   ])));
@@ -231,7 +219,7 @@ class _AcceptJobState extends State<AcceptJob> {
 
   isAcceptedEstimation() async {
     List<SentOffer> offersSent =
-        await ApiHandler().isOfferCreated(widget.arguments.request.id);
+        await ApiHandler().isOfferCreated(arguments.request.id);
 
     bool rejectedOffers = offersSent.length == 0
         ? false
@@ -245,25 +233,25 @@ class _AcceptJobState extends State<AcceptJob> {
         isAlreadyAccepted = true;
       });
 
-      // ApiHandler().openStartedJob(widget.arguments.request.id, context);
+      // ApiHandler().openStartedJob(arguments.request.id, context);
 
-      widget.arguments.estimation.isApproved = true;
+      arguments.estimation.isApproved = true;
       // ignore: use_build_context_synchronously
-      Navigator.popAndPushNamed(context, "JobDetail",
+      Get.offAndToNamed(jobDetail,
           arguments: DetailedRequest(
-              request: widget.arguments.request,
-              vehicle: widget.arguments.vehicle,
-              service: widget.arguments.service,
-              estimation: widget.arguments.estimation));
+              request: arguments.request,
+              vehicle: arguments.vehicle,
+              service: arguments.service,
+              estimation: arguments.estimation));
     } else if (rejectedOffers == true) {
-      widget.arguments.estimation.isRejected = true;
+      arguments.estimation.isRejected = true;
       // ignore: use_build_context_synchronously
-      Navigator.popAndPushNamed(context, "JobDetail",
+      Get.offAndToNamed(jobDetail,
           arguments: DetailedRequest(
-              request: widget.arguments.request,
-              vehicle: widget.arguments.vehicle,
-              service: widget.arguments.service,
-              estimation: widget.arguments.estimation));
+              request: arguments.request,
+              vehicle: arguments.vehicle,
+              service: arguments.service,
+              estimation: arguments.estimation));
     }
   }
 
@@ -272,11 +260,11 @@ class _AcceptJobState extends State<AcceptJob> {
         statusIndex != 4 &&
         !rejectedOffer &&
         !modalShowed &&
-        widget.arguments.request.requestStatus != "SERVICE_UNDERWAY") {
-      // bool value =await ApiHandler().isOfferAccepted(widget.arguments.request.id);
-      print("QQQQQQQQQQQ: " + widget.arguments.request.id);
+        arguments.request.requestStatus != "SERVICE_UNDERWAY") {
+      // bool value =await ApiHandler().isOfferAccepted(arguments.request.id);
+      print("QQQQQQQQQQQ: " + arguments.request.id);
       List<SentOffer> offersSent =
-          await ApiHandler().isOfferCreated(widget.arguments.request.id);
+          await ApiHandler().isOfferCreated(arguments.request.id);
 
       bool rejectedOffers = offersSent.length == 0
           ? false
@@ -318,20 +306,20 @@ class _AcceptJobState extends State<AcceptJob> {
                           buttonTitle: 'Start Work',
                           callBackFunction: (() async {
                             bool value = await ApiHandler()
-                                .isOfferAccepted(widget.arguments.request.id);
+                                .isOfferAccepted(arguments.request.id);
                             print("VVVVVVVV: " + value.toString());
                             if (value) {
                               ApiHandler().updateJobStatus(
                                   request.id, context, "SERVICE_UNDERWAY", (() {
-                                // Navigator.popAndPushNamed(context,"JobDetail");
+                                // Get.offAndToNamed("JobDetail");
 
-                                // Navigator.pop(context);
+                                // Get.back();
                                 ApiHandler().openStartedJob(
-                                    widget.arguments.request.id, context);
+                                    arguments.request.id, context);
 
                                 setState(() {
                                   statusIndex = 9;
-                                  widget.arguments.request.requestStatus =
+                                  arguments.request.requestStatus =
                                       "SERVICE_UNDERWAY";
                                 });
 
@@ -344,9 +332,9 @@ class _AcceptJobState extends State<AcceptJob> {
                                   "Customer Must Accept Your Offer Before you continue",
                                   "Cancel",
                                   "Ok", (() {
-                                Navigator.pop(context);
+                                Get.back();
                               }), (() {
-                                Navigator.pop(context);
+                                Get.back();
                               }));
                             }
                           })),
@@ -385,22 +373,22 @@ class _AcceptJobState extends State<AcceptJob> {
                           width: MediaQuery.of(context).size.width * 0.9,
                           buttonTitle: 'Ok',
                           callBackFunction: (() async {
-                            Navigator.popAndPushNamed(context, "Home");
+                            Get.offAndToNamed(homePage);
                           })),
                       CustomButton(
                           width: MediaQuery.of(context).size.width * 0.9,
                           buttonTitle: 'Counter Offer',
                           callBackFunction: (() {
-                            // bool value =await ApiHandler().isOfferAccepted(widget.arguments.request.id);
+                            // bool value =await ApiHandler().isOfferAccepted(arguments.request.id);
 
-                            // DetailedOffer(detailedRequest: widget.arguments , offer: estimation) ;
+                            // DetailedOffer(detailedRequest: arguments , offer: estimation) ;
                             estimation.isCounterOffer = true;
                             estimation.isApproved = false;
                             estimation.isRejected = false;
 
-                            Navigator.popAndPushNamed(context, "EditOffer",
+                            Get.offAndToNamed(editOffer,
                                 arguments: DetailedOffer(
-                                    detailedRequest: widget.arguments,
+                                    detailedRequest: arguments,
                                     offer: estimation));
                           }))
                     ],
@@ -418,7 +406,7 @@ class _AcceptJobState extends State<AcceptJob> {
   }
 
   checkIfOfferCreated() async {
-    offerList = await ApiHandler().isOfferCreated(widget.arguments.request.id);
+    offerList = await ApiHandler().isOfferCreated(arguments.request.id);
 
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
           if (offerList.length > 0) {
@@ -471,7 +459,7 @@ class _AcceptJobState extends State<AcceptJob> {
           foregroundColor: Colors.grey[700],
           leading: new IconButton(
             icon: new Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pushNamed(context, "Requests"),
+            onPressed: () => Get.toNamed(requests),
           ),
           backgroundColor: Colors.white,
           centerTitle: true,
@@ -606,7 +594,7 @@ class _AcceptJobState extends State<AcceptJob> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(10),
                                             child: Text(
-                                                "\$ ${widget.arguments.estimation.totalEstimation.toString().replaceAll(".0", "")}",
+                                                "\$ ${arguments.estimation.totalEstimation.toString().replaceAll(".0", "")}",
                                                 style: const TextStyle(
                                                     height: 1.5, fontSize: 14)),
                                           )),
@@ -628,7 +616,7 @@ class _AcceptJobState extends State<AcceptJob> {
                         vehicleImage: vehicle.image,
                       ),
                       ((statusIndex == 4 &&
-                              widget.arguments.request.requestStatus !=
+                              arguments.request.requestStatus !=
                                   "SERVICE_UNDERWAY")
                           ? CustomButton(
                               buttonTitle: "Give Rating",
@@ -676,17 +664,15 @@ class _AcceptJobState extends State<AcceptJob> {
                                         "Create Estimation Before You continue",
                                         "Cancel",
                                         "Ok", (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }), (() {
-                                      Navigator.pop(context);
-                                      Navigator.pushNamed(
-                                          context, "CreateOffer",
-                                          arguments: widget.arguments);
+                                      Get.back();
+                                      Get.toNamed(createOffer,
+                                          arguments: arguments);
                                     }));
                                   } else if (statusIndex == 5) {
                                     bool value = await ApiHandler()
-                                        .isOfferAccepted(
-                                            widget.arguments.request.id);
+                                        .isOfferAccepted(arguments.request.id);
                                     if (value) {
                                       // ignore: use_build_context_synchronously
                                       ApiHandler().updateJobStatus(request.id,
@@ -696,18 +682,14 @@ class _AcceptJobState extends State<AcceptJob> {
                                           statusIndex = 9;
                                         });
 
-                                        widget.arguments.request.requestStatus =
+                                        arguments.request.requestStatus =
                                             "SERVICE_UNDERWAY";
                                         // ApiHandler().openStartedJob(widget.requestData.id, context);
-                                        Navigator.popAndPushNamed(
-                                            context, "JobDetail",
+                                        Get.offAndToNamed(jobDetail,
                                             arguments: DetailedRequest(
-                                                request:
-                                                    widget.arguments.request,
-                                                vehicle:
-                                                    widget.arguments.vehicle,
-                                                service:
-                                                    widget.arguments.service,
+                                                request: arguments.request,
+                                                vehicle: arguments.vehicle,
+                                                service: arguments.service,
                                                 estimation: estimation));
                                       }));
                                     } else {
@@ -717,9 +699,9 @@ class _AcceptJobState extends State<AcceptJob> {
                                           "Customer Must Accept Your Offer Before you continue",
                                           "Cancel",
                                           "Ok", (() {
-                                        Navigator.pop(context);
+                                        Get.back();
                                       }), (() {
-                                        Navigator.pop(context);
+                                        Get.back();
                                       }));
                                     }
                                   }
@@ -733,16 +715,14 @@ class _AcceptJobState extends State<AcceptJob> {
                               callBackFunction: (() {
                                 ApiHandler().updateJobStatus(
                                     request.id, context, "COMPLETED", (() {
-                                  // Navigator.popAndPushNamed(context,"Requests");
-                                  widget.arguments.request.requestStatus =
-                                      "COMPLETED";
+                                  // Get.offAndToNamed("Requests");
+                                  arguments.request.requestStatus = "COMPLETED";
 
-                                  Navigator.popAndPushNamed(
-                                      context, "JobDetail",
+                                  Get.offAndToNamed(jobDetail,
                                       arguments: DetailedRequest(
-                                          request: widget.arguments.request,
-                                          vehicle: widget.arguments.vehicle,
-                                          service: widget.arguments.service,
+                                          request: arguments.request,
+                                          vehicle: arguments.vehicle,
+                                          service: arguments.service,
                                           estimation: estimation));
 
                                   finshed();
@@ -785,7 +765,7 @@ class _AcceptJobState extends State<AcceptJob> {
                                           padding: const EdgeInsets.fromLTRB(
                                               10, 10, 10, 0),
                                           child: Text(
-                                              widget.arguments.estimation.title,
+                                              arguments.estimation.title,
                                               style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold)),
@@ -797,7 +777,7 @@ class _AcceptJobState extends State<AcceptJob> {
                                             padding: const EdgeInsets.all(10),
                                             child: Text(
                                                 "\$" +
-                                                    widget.arguments.estimation
+                                                    arguments.estimation
                                                         .totalEstimation,
                                                 style: const TextStyle(
                                                     height: 1.5, fontSize: 14)),
@@ -809,8 +789,7 @@ class _AcceptJobState extends State<AcceptJob> {
                                     alignment: Alignment.topLeft,
                                     child: Padding(
                                       padding: const EdgeInsets.all(10),
-                                      child: Text(
-                                          widget.arguments.estimation.note,
+                                      child: Text(arguments.estimation.note,
                                           style: const TextStyle(
                                               height: 1.5, fontSize: 14)),
                                     )),
@@ -829,18 +808,15 @@ class _AcceptJobState extends State<AcceptJob> {
                                           estimation.isCounterOffer = true;
                                           estimation.isApproved = false;
                                           estimation.isRejected = false;
-                                          Navigator.popAndPushNamed(
-                                              context, "EditOffer",
+                                          Get.offAndToNamed(editOffer,
                                               arguments: DetailedOffer(
-                                                  detailedRequest:
-                                                      widget.arguments,
+                                                  detailedRequest: arguments,
                                                   offer: estimation));
                                         } else {
                                           Navigator.pushNamed(
-                                              context, "OnlyDisplayOffer",
+                                              context, onlyDisplayOffer,
                                               arguments: DetailedOffer(
-                                                  detailedRequest:
-                                                      widget.arguments,
+                                                  detailedRequest: arguments,
                                                   offer: estimation));
                                         }
                                       },
@@ -869,8 +845,8 @@ class _AcceptJobState extends State<AcceptJob> {
                               margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                               child: TextButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context, "CreateOffer",
-                                      arguments: widget.arguments);
+                                  Get.toNamed(createOffer,
+                                      arguments: arguments);
                                 },
                                 child: const Text(
                                   'Create Estimate',
@@ -1271,7 +1247,7 @@ class _AcceptJobState extends State<AcceptJob> {
                                                             .toIso8601String();
                                                         newSchedule
                                                             .time = DateTime
-                                                                .parse(val!)
+                                                                .parse(val)
                                                             .toIso8601String();
                                                       });
                                                     },
@@ -1334,13 +1310,12 @@ class _AcceptJobState extends State<AcceptJob> {
                                         "Are you sure you want to cancel this Job",
                                         "No",
                                         "Yes", (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }), (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                       ApiHandler().updateJobStatus(
                                           request.id, context, "CANCELED", (() {
-                                        Navigator.popAndPushNamed(
-                                            context, "Requests");
+                                        Get.offAndToNamed(requests);
                                       }));
                                       //  ApiHandler().rejectJob(request.id,request.technicianInfo.id,request.customerId,context);
                                     }));

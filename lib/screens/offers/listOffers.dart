@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
+import 'package:panda_technician/app/modal/auto_service/service_request_model.dart';
 import 'package:panda_technician/app/modules/job_offer/job_offer.controller.dart';
 import 'package:panda_technician/components/globalComponents/Footer.dart';
 import 'package:panda_technician/components/globalComponents/emptyScreen.dart';
-import 'package:panda_technician/components/messageComponents/centredMessage.dart';
 import 'package:panda_technician/components/offerComponents/SingleOfferCard.dart';
-import 'package:panda_technician/models/RequestsModel.dart';
 import 'package:panda_technician/models/requests/canceld.dart';
-import 'package:panda_technician/models/requests/requests.dart';
-import 'package:empty_widget/empty_widget.dart';
 
 class Offers extends StatefulWidget {
   const Offers({super.key});
@@ -19,7 +16,7 @@ class Offers extends StatefulWidget {
 }
 
 class _OffersState extends State<Offers> {
-  late List<RequestsM> _requestModel;
+  late List<ServiceRequestModel> _requestModel;
   bool loading = false;
   List canceldIndex = [];
   List<Canceld> canceld = [];

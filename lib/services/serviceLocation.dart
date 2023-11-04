@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/models/globalModels/serviceLocation.dart';
+import 'package:panda_technician/routes/route.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -58,7 +60,7 @@ Future<bool> permissionWithCallback(context, Function callBack) async {
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
     Geolocator.openLocationSettings();
-    Navigator.popAndPushNamed(context, "Home");
+    Get.offAndToNamed(homePage);
 
     return false;
   }
