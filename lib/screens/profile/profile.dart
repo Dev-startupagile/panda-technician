@@ -95,7 +95,9 @@ class _ProfileState extends State<Profile> {
       Provider.of<ProfileProvider>(context, listen: false)
           .changeProfileProvider(profile);
     }
-
+    bool notConnectedYet =
+        stripeRetrieveAccountData["details_submitted"] == null ||
+            stripeRetrieveAccountData["details_submitted"] == false;
     return SafeArea(
         top: false,
         bottom: true,
@@ -189,22 +191,18 @@ class _ProfileState extends State<Profile> {
                             Get.toNamed(serviceSetting);
                           })),
                       SingleTag(
+                          ico: Icons.history,
+                          title: "Payment History",
+                          callBackHandler: (() {
+                            Get.toNamed(technicianTransactionPage);
+                          })),
+                      SingleTag(
                           ico: Icons.payments_outlined,
-                          title:
-                              stripeRetrieveAccountData["details_submitted"] ==
-                                          null ||
-                                      stripeRetrieveAccountData[
-                                              "details_submitted"] ==
-                                          false
-                                  ? "Payments"
-                                  : "Payment Already linked",
+                          title: notConnectedYet
+                              ? "Payments"
+                              : "Payment Already linked",
                           callBackHandler: (() async {
-                            if (stripeRetrieveAccountData[
-                                        "details_submitted"] !=
-                                    null ||
-                                stripeRetrieveAccountData[
-                                        "details_submitted"] ==
-                                    false) {
+                            if (!notConnectedYet) {
                               // Get.back();
                               DialogBox(context, "Message", "Already Connected",
                                   "Cancel", "Ok", (() {
@@ -214,42 +212,57 @@ class _ProfileState extends State<Profile> {
                               }));
                               return;
                             }
-                            // Get.toNamed("Payment");
-                            final prefs = await SharedPreferences.getInstance();
-                            var token = prefs.getString("apiToken");
-                            Loading(context);
-                            var response = await http.get(
-                              Uri.parse(
-                                  '${_appSettingService.config.baseURL}/account/connectAccountLink'),
-                              headers: {
-                                HttpHeaders.authorizationHeader: "Bearer $token"
-                              },
-                            );
+                            try {
+                              // Get.toNamed("Payment");
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              var token = prefs.getString("apiToken");
+                              Loading(context);
+                              var response = await http.get(
+                                Uri.parse(
+                                    '${_appSettingService.config.baseURL}/account/connectAccountLink'),
+                                headers: {
+                                  HttpHeaders.authorizationHeader:
+                                      "Bearer $token"
+                                },
+                              );
 
-                            // setState(() {
-                            //   strapiToken = json.decode(response.body)["url"] ?? "empty";
-                            // });
+                              // setState(() {
+                              //   strapiToken = json.decode(response.body)["url"] ?? "empty";
+                              // });
 
-                            var authUrl =
-                                json.decode(response.body)["url"] ?? "empty";
+                              var authUrl =
+                                  json.decode(response.body)["url"] ?? "empty";
 
-                            if (authUrl == "empty") {
-                              Get.back();
-                              DialogBox(context, "Message", "Already Connected",
-                                  "Cancel", "Ok", (() {
+                              if (authUrl == "empty") {
+                                Get.back();
+                                DialogBox(context, "Message",
+                                    "Already Connected", "Cancel", "Ok", (() {
+                                  Get.back();
+                                }), (() {
+                                  Get.back();
+                                }));
+                              } else {
+                                Get.back();
+
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => StripeWebView(
+                                              stripeUrl: Uri.parse(authUrl),
+                                            )));
+                              }
+                            } catch (e) {
+                              DialogBox(
+                                  context,
+                                  "Message",
+                                  "Error Occured when trying to connect account!",
+                                  "Cancel",
+                                  "Ok", (() {
                                 Get.back();
                               }), (() {
                                 Get.back();
                               }));
-                            } else {
-                              Get.back();
-
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => StripeWebView(
-                                            stripeUrl: Uri.parse(strapiToken),
-                                          )));
                             }
                           })),
                       Container(

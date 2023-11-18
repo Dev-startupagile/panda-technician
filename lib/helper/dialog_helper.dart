@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:panda_technician/routes/route.dart';
 
 class DialogHelper {
   static void showGetXLoading() {
@@ -96,7 +97,7 @@ class DialogHelper {
             TextButton(
               child: Text('Ok'),
               onPressed: () {
-                Get.back();
+                Get.toNamed(homePage);
               }, //closes popup
             ),
           ],

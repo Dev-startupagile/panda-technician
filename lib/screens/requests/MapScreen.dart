@@ -88,8 +88,12 @@ class _MapScreenState extends State<MapScreen> {
 
     WidgetsBinding.instance.addObserver(LifecycleEventHandler(
         detachedCallBack: () => (() async {
-              await ApiHandler()
-                  .changeStatus(0, 0, !stateNow, context, (() {}));
+              await ApiHandler().changeStatus(0, 0, !stateNow, context,
+                  ((value) {
+                stateNow = value;
+                Provider.of<StateProvider>(context, listen: false)
+                    .changeTechnicianState(value);
+              }));
             }),
         resumeCallBack: () async {
           print('resume...');
@@ -270,13 +274,9 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    stateNow = Provider.of<StateProvider>(context, listen: true).active;
     if (Provider.of<ProfileProvider>(context, listen: true).profile.id == "") {
       Provider.of<ProfileProvider>(context, listen: false)
           .changeProfileProvider(profileDetail);
-      Provider.of<StateProvider>(context, listen: false)
-          .changeTechnicianState(profileDetail.isOnline);
-      stateNow = Provider.of<StateProvider>(context, listen: true).active;
     }
 
     return SafeArea(
@@ -293,7 +293,8 @@ class _MapScreenState extends State<MapScreen> {
                 Get.back();
               }), (() async {
                 Loading(context);
-                await ApiHandler().changeStatus(0.0, 0.0, false, context, (() {
+                await ApiHandler().changeStatus(0.0, 0.0, false, context,
+                    ((value) {
                   SystemNavigator.pop();
                 }));
               }));
@@ -339,19 +340,20 @@ class _MapScreenState extends State<MapScreen> {
                                   Loading(context);
 
                                   handleLocationPermission(context);
+                                  stateNow = !stateNow;
                                   Position posi = await getLocation();
                                   await ApiHandler().changeStatus(
                                       posi.latitude,
                                       posi.longitude,
-                                      !stateNow,
-                                      context,
-                                      (() {}));
+                                      stateNow,
+                                      context, ((value) {
+                                    Get.back();
+                                    Provider.of<StateProvider>(context,
+                                            listen: false)
+                                        .changeTechnicianState(value);
+                                  }));
 
-                                  Provider.of<StateProvider>(context,
-                                          listen: false)
-                                      .changeTechnicianState(!stateNow);
-
-                                  Get.offAndToNamed(homePage);
+                                  // Get.offAndToNamed(homePage);
                                 },
                                 child: Image.asset(
                                   //  key: toggle,

@@ -22,6 +22,7 @@ import 'package:panda_technician/screens/profile/editPassword.dart';
 import 'package:panda_technician/screens/profile/editProfile.dart';
 import 'package:panda_technician/screens/profile/payment.dart';
 import 'package:panda_technician/screens/profile/profile.dart';
+import 'package:panda_technician/screens/profile/technician_transactions.dart';
 import 'package:panda_technician/screens/requestFlow/jobDetail.dart';
 import 'package:panda_technician/screens/requests/MapScreen.dart';
 import 'package:panda_technician/screens/requestFlow/acceptJob.dart';
@@ -65,12 +66,13 @@ const String forgetPassword = "/ForgetPassword";
 const String createAccount = "/CreateAccount";
 
 const String settingsPage = "/settingsPage";
+const String technicianTransactionPage = "/technicianTransactionPage";
 
 List<GetPage> getPages = [
   GetPage(name: initPage, page: () => const OnboardingSlider()),
   GetPage(name: loginPage, page: () => const Login()),
   GetPage(name: homePage, page: () => const MapScreen()),
-  GetPage(name: jobDetail, page: () => AcceptJob()),
+  GetPage(name: jobDetail, page: () => const AcceptJob()),
   GetPage(name: createOffer, page: () => CreateOffer()),
   GetPage(name: requests, page: () => const Requests()),
   GetPage(name: termsAndService, page: () => const TermAndService()),
@@ -98,4 +100,7 @@ List<GetPage> getPages = [
   GetPage(name: editOffer, page: () => EditOffer()),
   GetPage(name: settingsPage, page: () => Settings()),
   GetPage(name: updateDisplayOffer, page: () => UpdateDisplayOffer()),
+  GetPage(
+      name: technicianTransactionPage,
+      page: () => TechnicianTransactionWidget()),
 ];

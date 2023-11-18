@@ -277,7 +277,7 @@ class _CreateAccountState extends State<CreateAccount> {
                 ),
                 Container(
                   alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.60,
+                  height: MediaQuery.of(context).size.height * 0.70,
                   width: MediaQuery.of(context).size.width * 0.9,
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   decoration: BoxDecoration(
@@ -323,172 +323,9 @@ class _CreateAccountState extends State<CreateAccount> {
                         isNumber: false,
                         isError: errorForm == 5,
                       ),
-                      TextFiledCustom(
-                        updateCallback: ((value) {
-                          userDetail.password = value;
-                          if (is8Char(value) &&
-                              containsLowerCase(value) &&
-                              containsUpperCase(value) &&
-                              containsSymbols(value) &&
-                              containsNumb(value)) {
-                            errorForm = 0;
-                          }
-                          setState(() {
-                            confirmedPassword = value;
-                            updated = !updated;
-                          });
-                        }),
-                        preIcon: Icons.person,
-                        hintText: "Password",
-                        isPassword: true,
-                        isZipCode: false,
-                        isEmail: false,
-                        isNumber: false,
-                        isError: errorForm == 4,
-                      ),
-                      ((userDetail.password.isNotEmpty)
-                          ? Container(
-                              width: 340,
-                              margin: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(children: <Widget>[
-                                    Icon(
-                                      color: is8Char(userDetail.password)
-                                          ? Colors.green[400]
-                                          : Colors.grey[600],
-                                      Icons.circle,
-                                      size: 11,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                        style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 11),
-                                        "Minimem 8 charachters")
-                                  ]),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Row(children: <Widget>[
-                                    Icon(
-                                      color: containsNumb(userDetail.password)
-                                          ? Colors.green[400]
-                                          : Colors.grey[600],
-                                      Icons.circle,
-                                      size: 11,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                        style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 11),
-                                        "Numbers[0-9]")
-                                  ]),
-                                ],
-                              ),
-                            )
-                          : const SizedBox()),
-                      ((userDetail.password.isNotEmpty)
-                          ? Container(
-                              width: 340,
-                              margin: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(children: <Widget>[
-                                    Icon(
-                                      color:
-                                          containsLowerCase(userDetail.password)
-                                              ? Colors.green[400]
-                                              : Colors.grey[600],
-                                      Icons.circle,
-                                      size: 11,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                        style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 11),
-                                        "LowerCase Letters[a-z]")
-                                  ]),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Row(children: <Widget>[
-                                    Icon(
-                                      color:
-                                          containsUpperCase(userDetail.password)
-                                              ? Colors.green[400]
-                                              : Colors.grey[600],
-                                      Icons.circle,
-                                      size: 11,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                        style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 11),
-                                        "UpperCase Letters[A-Z]")
-                                  ]),
-                                ],
-                              ),
-                            )
-                          : const SizedBox()),
-                      ((userDetail.password.isNotEmpty)
-                          ? Container(
-                              width: 340,
-                              margin: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(children: <Widget>[
-                                    Icon(
-                                      color:
-                                          containsSymbols(userDetail.password)
-                                              ? Colors.green[400]
-                                              : Colors.grey[600],
-                                      Icons.circle,
-                                      size: 11,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                        style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 11),
-                                        "Symbols")
-                                  ]),
-                                ],
-                              ),
-                            )
-                          : const SizedBox()),
-                      TextFiledCustom(
-                          updateCallback: ((value) {
-                            if (userDetail.password != value) {}
-                            toBeconfirmed = value;
-                          }),
-                          preIcon: Icons.person,
-                          hintText: "Confirm Password",
-                          isPassword: true,
-                          isZipCode: false,
-                          isEmail: false,
-                          isNumber: false,
-                          password: confirmedPassword,
-                          isUpdated: updated),
                       Container(
                         width: 340,
-                        height: 50,
+                        height: 60,
                         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                         margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                         decoration: BoxDecoration(
@@ -526,6 +363,158 @@ class _CreateAccountState extends State<CreateAccount> {
                               signed: true, decimal: true),
                         ),
                       ),
+                      TextFiledCustom(
+                        updateCallback: ((value) {
+                          userDetail.password = value;
+                          if (is8Char(value) &&
+                              containsLowerCase(value) &&
+                              containsUpperCase(value) &&
+                              containsSymbols(value) &&
+                              containsNumb(value)) {
+                            errorForm = 0;
+                          }
+                          setState(() {
+                            confirmedPassword = value;
+                            updated = !updated;
+                          });
+                        }),
+                        preIcon: Icons.person,
+                        hintText: "Password",
+                        isPassword: true,
+                        isZipCode: false,
+                        isEmail: false,
+                        isNumber: false,
+                        isError: errorForm == 4,
+                      ),
+                      if (userDetail.password.isNotEmpty)
+                        Container(
+                          width: 340,
+                          margin: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Row(children: <Widget>[
+                                Icon(
+                                  color: is8Char(userDetail.password)
+                                      ? Colors.green[400]
+                                      : Colors.grey[600],
+                                  Icons.circle,
+                                  size: 11,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                    style: TextStyle(
+                                        color: Colors.grey[600], fontSize: 11),
+                                    "Minimem 8 charachters")
+                              ]),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Row(children: <Widget>[
+                                Icon(
+                                  color: containsNumb(userDetail.password)
+                                      ? Colors.green[400]
+                                      : Colors.grey[600],
+                                  Icons.circle,
+                                  size: 11,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                    style: TextStyle(
+                                        color: Colors.grey[600], fontSize: 11),
+                                    "Numbers[0-9]")
+                              ]),
+                            ],
+                          ),
+                        ),
+                      if (userDetail.password.isNotEmpty)
+                        Container(
+                          width: 340,
+                          margin: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Row(children: <Widget>[
+                                Icon(
+                                  color: containsLowerCase(userDetail.password)
+                                      ? Colors.green[400]
+                                      : Colors.grey[600],
+                                  Icons.circle,
+                                  size: 11,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                    style: TextStyle(
+                                        color: Colors.grey[600], fontSize: 11),
+                                    "LowerCase Letters[a-z]")
+                              ]),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Row(children: <Widget>[
+                                Icon(
+                                  color: containsUpperCase(userDetail.password)
+                                      ? Colors.green[400]
+                                      : Colors.grey[600],
+                                  Icons.circle,
+                                  size: 11,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                    style: TextStyle(
+                                        color: Colors.grey[600], fontSize: 11),
+                                    "UpperCase Letters[A-Z]")
+                              ]),
+                            ],
+                          ),
+                        ),
+                      if (userDetail.password.isNotEmpty)
+                        Container(
+                          width: 340,
+                          margin: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Row(children: <Widget>[
+                                Icon(
+                                  color: containsSymbols(userDetail.password)
+                                      ? Colors.green[400]
+                                      : Colors.grey[600],
+                                  Icons.circle,
+                                  size: 11,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                    style: TextStyle(
+                                        color: Colors.grey[600], fontSize: 11),
+                                    "Symbols")
+                              ]),
+                            ],
+                          ),
+                        ),
+                      TextFiledCustom(
+                          updateCallback: ((value) {
+                            if (userDetail.password != value) {}
+                            toBeconfirmed = value;
+                          }),
+                          preIcon: Icons.person,
+                          hintText: "Confirm Password",
+                          isPassword: true,
+                          isZipCode: false,
+                          isEmail: false,
+                          isNumber: false,
+                          password: confirmedPassword,
+                          isUpdated: updated),
                     ],
                   ),
                 ),
