@@ -15,6 +15,7 @@ import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/core/constants/constants.dart';
+import 'package:panda_technician/helper/dialog_helper.dart';
 import 'package:panda_technician/models/bankInfo.dart';
 import 'package:panda_technician/models/globalModels/schedule.dart';
 import 'package:panda_technician/models/offer.dart';
@@ -675,6 +676,8 @@ class ApiHandler {
 
   Future<bool> signInWithSocial(
       bool signIn, AvaliableSocialLogin socialLogin) async {
+    DialogHelper.showGetXLoading();
+
     AuthProvider authProvider = socialLogin == AvaliableSocialLogin.google
         ? AuthProvider.google
         : socialLogin == AvaliableSocialLogin.facebook
@@ -684,6 +687,7 @@ class ApiHandler {
     SignInResult res =
         await Amplify.Auth.signInWithWebUI(provider: authProvider);
     print("Sign in result ${res.isSignedIn}");
+    DialogHelper.hideGetXLoading();
     if (res.isSignedIn) {
       try {
         List<AuthUserAttribute> listOfAttr =

@@ -195,7 +195,8 @@ class _LoginState extends State<Login> {
                           icon: AppIcons.appleIcon,
                           textColor: Colors.black,
                           isSignIn: true,
-                          onTap: () => {},
+                          onTap: () => _apiHandler.signInWithSocial(
+                              true, AvaliableSocialLogin.apple),
                           name: "Apple"),
                       SocialLoginBtn(
                           fillColor: const Color(0xff1877f2),
