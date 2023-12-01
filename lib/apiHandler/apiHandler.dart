@@ -582,8 +582,8 @@ class ApiHandler {
     }
   }
 
-  changeStatus(
-      double latitude, double longitude, bool status, context, callBack) async {
+  changeStatus(double latitude, double longitude, bool status, context,
+      Function(bool) callBack) async {
     try {
       var url = Uri.parse(
           _appSettingService.config.baseURL + "/users/technician/status");
@@ -612,7 +612,7 @@ class ApiHandler {
         // Provider.of<StateProvider>(context,listen: false).changeTechnicianState(status);
 
         // Timer(Duration(seconds: 4), () {
-        callBack();
+        callBack(jsonDecode(response.body)["data"]["isOnline"]);
 // });
         return true;
       } else {

@@ -7,6 +7,7 @@ import 'package:panda_technician/components/offerComponents/singleOffer.dart';
 import 'package:panda_technician/models/DetailedOffer.dart';
 import 'package:panda_technician/models/offer.dart';
 import 'package:panda_technician/models/requests/detailedRequest.dart';
+import 'package:panda_technician/routes/route.dart';
 
 class CreateOffer extends StatefulWidget {
   CreateOffer({super.key});
@@ -161,7 +162,7 @@ class _CreateOfferState extends State<CreateOffer> {
                                       Get.back();
                                     }));
                                   } else {
-                                    Get.toNamed("DisplayOffer",
+                                    Get.toNamed(displayOffer,
                                         arguments: DetailedOffer(
                                             detailedRequest: arguments,
                                             offer: offerList));

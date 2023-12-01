@@ -22,8 +22,8 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     // isAlready();
-    email = "baslielselamu2018+tpp@gmail.com";
-    password = "123456";
+    email = "baslielselamu2018+tppp@gmail.com";
+    password = "Ap2334@56";
   }
 
   isAlready() {

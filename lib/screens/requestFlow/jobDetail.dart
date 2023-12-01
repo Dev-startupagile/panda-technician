@@ -558,12 +558,12 @@ class _JobDetailState extends State<JobDetail> {
                           margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                           child: TextButton(
                             onPressed: () async {
-                              // await jobOfferController.acceptJob(
-                              //     request.id, request);
+                              await jobOfferController.acceptJob(
+                                  request.id, request);
                               if (request.isScheduled) {
-                                DialogHelper.showGetXPop(
-                                    "Schedulled Job Accepted",
-                                    "We will send you reminder when apointment is due!");
+                                // DialogHelper.showGetXPop(
+                                //     "Schedulled Job Accepted",
+                                //     "We will send you reminder when apointment is due!");
                               }
                             },
                             child: Text(

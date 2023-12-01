@@ -1,20 +1,14 @@
 // Import for Android features.
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/container.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Import for iOS features.
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 class StripeWebView extends StatefulWidget {
-  StripeWebView({super.key, required Uri this.stripeUrl});
-  Uri stripeUrl;
+  StripeWebView({super.key, required this.stripeUrl});
+  final Uri stripeUrl;
   @override
   State<StripeWebView> createState() => _StripeWebViewState();
 }
@@ -49,7 +43,7 @@ class _StripeWebViewState extends State<StripeWebView> {
 
   @override
   Widget build(BuildContext context) {
-    webController.loadRequest(widget.stripeUrl);
+    // webController.loadRequest(widget.stripeUrl);
     return Scaffold(
         appBar: AppBar(
           title: const Text(

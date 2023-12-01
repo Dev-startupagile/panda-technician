@@ -31,7 +31,7 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class AcceptJob extends StatefulWidget {
-  AcceptJob({super.key});
+  const AcceptJob({super.key});
   @override
   State<AcceptJob> createState() => _AcceptJobState();
 }
@@ -296,7 +296,7 @@ class _AcceptJobState extends State<AcceptJob> {
                   child: Column(
                     children: [
                       const Text(
-                        "Customer has Approved Your Offer you can now start working",
+                        "Customer has Approved and made payment for your Offer. you can now start working",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 17, fontWeight: FontWeight.bold),
