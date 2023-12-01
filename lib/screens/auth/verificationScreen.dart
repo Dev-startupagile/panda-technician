@@ -3,9 +3,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/coutDown.dart';
 import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
+import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/screens/auth/LoginScreen.dart';
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,13 +38,12 @@ class _VerficationScreenState extends State<VerficationScreen>
     _controller = AnimationController(vsync: this);
     newPassword = "";
     a.addListener(() {
-  if(a.text.length == 4){
-    b.text = b.text[1];
-    c.text = c.text[2];
-    d.text = d.text[3];
-
-  }
-});
+      if (a.text.length == 4) {
+        b.text = b.text[1];
+        c.text = c.text[2];
+        d.text = d.text[3];
+      }
+    });
     startTimer();
   }
 
@@ -76,7 +77,6 @@ class _VerficationScreenState extends State<VerficationScreen>
       }
     });
   }
-
 
   @override
   void dispose() {
@@ -125,18 +125,16 @@ class _VerficationScreenState extends State<VerficationScreen>
               ),
               child: TextFormField(
                 controller: a,
-                onChanged: (_) =>{ 
-                  
-                    if(a.text.length == 4){
-                  
-    b.text = a.text[1],
-    c.text = a.text[2],
-    d.text = a.text[3],
-    a.text = a.text[0],
-
-
-  },
-                  FocusScope.of(context).nextFocus()},
+                onChanged: (_) => {
+                  if (a.text.length == 4)
+                    {
+                      b.text = a.text[1],
+                      c.text = a.text[2],
+                      d.text = a.text[3],
+                      a.text = a.text[0],
+                    },
+                  FocusScope.of(context).nextFocus()
+                },
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
                 maxLength: 4,
@@ -280,26 +278,24 @@ class _VerficationScreenState extends State<VerficationScreen>
                     Loading(context);
                     final prefs = await SharedPreferences.getInstance();
 
-if((a.text + b.text + c.text + d.text).toString() == "" || (a.text + b.text + c.text + d.text).toString().length != 4 ){
-                    showPurchaseDialog(context,"Error Occured","Please Confirm Password");
-
-}else{
-  var response = await ApiHandler().resetPassword(
-                        prefs.getString("userEmail").toString(),
-                        newPassword,
-                        a.text + b.text + c.text + d.text);
-
-                    if (response) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Login()),
-                      );
-                    } else {
+                    if ((a.text + b.text + c.text + d.text).toString() == "" ||
+                        (a.text + b.text + c.text + d.text).toString().length !=
+                            4) {
                       showPurchaseDialog(
-                          context, "Error Occured", "Please Try Again Latter");
+                          context, "Error Occured", "Please Confirm Password");
+                    } else {
+                      var response = await ApiHandler().resetPassword(
+                          prefs.getString("userEmail").toString(),
+                          newPassword,
+                          a.text + b.text + c.text + d.text);
+
+                      if (response) {
+                        Get.toNamed(loginPage);
+                      } else {
+                        showPurchaseDialog(context, "Error Occured",
+                            "Please Try Again Latter");
+                      }
                     }
-}
-                  
                   },
                   child: const Text(
                     'Reset Password',
@@ -324,7 +320,7 @@ if((a.text + b.text + c.text + d.text).toString() == "" || (a.text + b.text + c.
                         prefs.getString("userEmail").toString(), context);
 
                     if (response) {
-                      Navigator.pushNamed(context, "Verification");
+                      Get.toNamed(verification);
 
                       showPurchaseDialog(
                           context, "Otp Sent", "Check Your Email",

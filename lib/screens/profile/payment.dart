@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
 import 'package:panda_technician/components/globalComponents/customButton.dart';
@@ -75,12 +76,12 @@ class _PaymentState extends State<Payment> {
         wwwi = "${dotenv.env['S3_BUCKET_URL']}panda/image/" +
             "$timestamp" +
             "tech.jpg";
-        Navigator.pop(context);
+        Get.back();
       });
       DialogBox(
           context, "Success", "SuccessFully uploaded w9 image", "Cancel", "Ok",
           (() {
-        Navigator.pop(context);
+        Get.back();
         this.setState(() {
           w9err = false;
         });
@@ -88,15 +89,15 @@ class _PaymentState extends State<Payment> {
         this.setState(() {
           w9err = false;
         });
-        Navigator.pop(context);
+        Get.back();
       }));
     } else {
-      Navigator.pop(context);
+      Get.back();
 
       DialogBox(context, "Error", "Something went wrong", "Cancel", "Ok", (() {
-        Navigator.pop(context);
+        Get.back();
       }), (() {
-        Navigator.pop(context);
+        Get.back();
       }));
     }
   }
@@ -296,9 +297,9 @@ class _PaymentState extends State<Payment> {
                               "Upload W9 Form before adding details",
                               "Close",
                               "Ok", (() {
-                            Navigator.pop(context);
+                            Get.back();
                           }), (() {
-                            Navigator.pop(context);
+                            Get.back();
                           }));
                         } else if (bankName == "") {
                           this.setState(() {
@@ -306,9 +307,9 @@ class _PaymentState extends State<Payment> {
                           });
                           DialogBox(context, "Missing Field",
                               "Bank Name Not Added", "Close", "Ok", (() {
-                            Navigator.pop(context);
+                            Get.back();
                           }), (() {
-                            Navigator.pop(context);
+                            Get.back();
                           }));
                         } else if (accountNumber == "") {
                           this.setState(() {
@@ -316,9 +317,9 @@ class _PaymentState extends State<Payment> {
                           });
                           DialogBox(context, "Missing Field",
                               "Account Number Not Added", "Close", "Ok", (() {
-                            Navigator.pop(context);
+                            Get.back();
                           }), (() {
-                            Navigator.pop(context);
+                            Get.back();
                           }));
                         } else if (routingNumber == "") {
                           this.setState(() {
@@ -326,9 +327,9 @@ class _PaymentState extends State<Payment> {
                           });
                           DialogBox(context, "Missing Field",
                               "Routing Number Not Added", "Close", "Ok", (() {
-                            Navigator.pop(context);
+                            Get.back();
                           }), (() {
-                            Navigator.pop(context);
+                            Get.back();
                           }));
                         } else {
                           ApiHandler().addBankInfo(wwwi, bankName,

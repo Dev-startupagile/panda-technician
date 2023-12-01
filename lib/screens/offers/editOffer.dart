@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:panda_technician/apiHandler/apiHandler.dart';
-import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/components/offerComponents/singleOffer.dart';
 import 'package:panda_technician/models/DetailedOffer.dart';
-import 'package:panda_technician/models/RequestsModel.dart';
 import 'package:panda_technician/models/offer.dart';
-import 'package:panda_technician/models/requests/detailedRequest.dart';
-import 'package:panda_technician/screens/requests/MapScreen.dart';
+import 'package:panda_technician/routes/route.dart';
 
 class EditOffer extends StatefulWidget {
-  EditOffer({super.key, required this.detailedOffer});
+  EditOffer({super.key});
   // DetailedRequest detailedOffer;
-  DetailedOffer detailedOffer;
 
   @override
   State<EditOffer> createState() => _EditOfferState();
@@ -26,6 +22,7 @@ class _EditOfferState extends State<EditOffer> {
   TextEditingController taxController = TextEditingController();
   TextEditingController discountController = TextEditingController();
   double discount = 0;
+  final DetailedOffer detailedOffer = Get.arguments;
 
   @override
   void initState() {
@@ -35,13 +32,12 @@ class _EditOfferState extends State<EditOffer> {
     _offerCount = 13;
     offe = 1;
     //  offerList = Offer(items: []);
-    offerList = widget.detailedOffer.offer;
+    offerList = detailedOffer.offer;
 
-    taxController.text = widget.detailedOffer.offer.vat.toString();
-    discountController.text =
-        widget.detailedOffer.offer.discount.toString() == "0.0"
-            ? ""
-            : widget.detailedOffer.offer.discount.toString();
+    taxController.text = detailedOffer.offer.vat.toString();
+    discountController.text = detailedOffer.offer.discount.toString() == "0.0"
+        ? ""
+        : detailedOffer.offer.discount.toString();
 
     // Requires import: 'dart:async'
   }
@@ -108,7 +104,7 @@ class _EditOfferState extends State<EditOffer> {
                               margin: const EdgeInsets.fromLTRB(10, 40, 0, 0),
                               child: TextButton(
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Get.back();
                                 },
                                 child: const Text(
                                   'CANCEL',
@@ -127,16 +123,16 @@ class _EditOfferState extends State<EditOffer> {
                               margin: const EdgeInsets.fromLTRB(0, 40, 10, 0),
                               child: TextButton(
                                 onPressed: () {
-                                  offerList.requestId = widget
-                                      .detailedOffer.detailedRequest.request.id;
+                                  offerList.requestId =
+                                      detailedOffer.detailedRequest.request.id;
                                   offerList.totalEstimation =
                                       getTotal().toString();
                                   //  print(offerList.toJson());
 
-                                  widget.detailedOffer.detailedRequest.request
+                                  detailedOffer.detailedRequest.request
                                       .requestStatus = "ESTIMATED";
-                                  widget.detailedOffer.detailedRequest
-                                      .estimation = offerList;
+                                  detailedOffer.detailedRequest.estimation =
+                                      offerList;
                                   if (offerList.title == "") {
                                     DialogBox(
                                         context,
@@ -144,9 +140,9 @@ class _EditOfferState extends State<EditOffer> {
                                         "You must enter a title ",
                                         "Cancel",
                                         "Ok", (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }), (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }));
                                   } else if (offerList.items.length == 0) {
                                     DialogBox(
@@ -155,9 +151,9 @@ class _EditOfferState extends State<EditOffer> {
                                         "You must add at list one item ",
                                         "Cancel",
                                         "Ok", (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }), (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }));
                                   } else if (offerList.note == "") {
                                     DialogBox(
@@ -166,14 +162,13 @@ class _EditOfferState extends State<EditOffer> {
                                         "You must add a Note ",
                                         "Cancel",
                                         "Ok", (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }), (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }));
                                   } else {
-                                    Navigator.pushNamed(
-                                        context, "UpdateDisplayOffer",
-                                        arguments: widget.detailedOffer);
+                                    Get.toNamed(updateDisplayOffer,
+                                        arguments: detailedOffer);
                                   }
                                 },
                                 child: const Text(
@@ -222,8 +217,8 @@ class _EditOfferState extends State<EditOffer> {
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                               border: InputBorder.none,
-                              hintText: widget.detailedOffer.detailedRequest
-                                  .request.description.title,
+                              hintText: detailedOffer
+                                  .detailedRequest.request.description.title,
                             ),
                           )),
                       const SizedBox(
@@ -348,7 +343,7 @@ class _EditOfferState extends State<EditOffer> {
 
 //   TextFiledCustom(updateCallback: ((value){
 // offerList.vat = double.parse(value);
-//   }), preIcon: Icons.percent, hintText: widget.detailedOffer.offer.vat.toString(), width: MediaQuery.of(context).size.width * 0.9, isPassword: false, isZipCode: false, isEmail: false, isNumber: true),
+//   }), preIcon: Icons.percent, hintText: detailedOffer.offer.vat.toString(), width: MediaQuery.of(context).size.width * 0.9, isPassword: false, isZipCode: false, isEmail: false, isNumber: true),
                       Container(
                           width: MediaQuery.of(context).size.width * 0.9,
                           height: 40,
@@ -432,8 +427,8 @@ class _EditOfferState extends State<EditOffer> {
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                               border: InputBorder.none,
-                              hintText: widget.detailedOffer.detailedRequest
-                                  .request.description.note,
+                              hintText: detailedOffer
+                                  .detailedRequest.request.description.note,
                             ),
                           )),
                       Column(

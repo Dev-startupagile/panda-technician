@@ -1,23 +1,22 @@
 // ignore_for_file: sort_child_properties_last, depend_on_referenced_packages
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
+import 'package:panda_technician/app/modal/auto_service/service_request_model.dart';
+import 'package:panda_technician/app/modules/job_offer/job_offer.controller.dart';
 import 'package:panda_technician/components/globalComponents/Footer.dart';
-import 'package:map/map.dart';
 import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/components/offerComponents/SpecificSingleOfferCard.dart';
 import 'package:panda_technician/models/profile.dart';
 import 'package:panda_technician/models/requests/canceld.dart';
 import 'package:panda_technician/routes/route.dart';
-import 'package:panda_technician/screens/requests/StatusRequest.dart';
-import 'package:panda_technician/screens/requests/jobList.dart';
 import 'package:panda_technician/services/appStateService.dart';
 import 'package:panda_technician/services/serviceDate.dart';
 import 'package:panda_technician/services/serviceLocation.dart';
@@ -46,13 +45,11 @@ class _MapScreenState extends State<MapScreen> {
   late Timer timer;
   bool locationFound = false;
   int updater = 0;
-  List<StatusRequest> statusRequest = [];
   List<int> canceldList = [];
   List<Canceld> canceld = [];
   int count = 0;
   int specificNotificationBaj = 0;
 
-  bool loading = false;
   List<TargetFocus> targets = [];
 
   LatLng myLocation = LatLng(343.43, 342.34);
@@ -67,17 +64,27 @@ class _MapScreenState extends State<MapScreen> {
   bool stateNow = false;
   bool bottomSheetShown = false;
   int oldRequestCount = 0;
+
+  final JobOfferController jobOfferController = Get.find<JobOfferController>();
+
   @override
   void initState() {
     super.initState();
     profileDetail =
         ProfileModel(createdAt: DateTime.now(), updatedAt: DateTime.now());
-    _getTechnicianRequests();
+    jobOfferController.requestStreamController.stream.listen((event) {
+      print("[MapScreen requestStreamController]$event");
+      var serviceRequests = jobOfferController.serviceRequests
+          .where((s) => s.requestStatus == 'PENDING')
+          .toList();
+      if (serviceRequests.isNotEmpty)
+        _showNewRequestButtonSheet(serviceRequests);
+      updateSpecificNotificationBaj();
+    });
+
     getProfiles();
     stateNow = false;
     getMyLocation();
-    timer = Timer.periodic(Duration(seconds: 15),
-        (Timer t) => {updateSpecificNotificationBaj(), checkForUpdate()});
 
     WidgetsBinding.instance.addObserver(LifecycleEventHandler(
         detachedCallBack: () => (() async {
@@ -212,79 +219,40 @@ class _MapScreenState extends State<MapScreen> {
     //           });
   }
 
-  void checkForUpdate() async {
-    statusRequest = (await ApiHandler().getTechnicianRequests())!;
-    canceld = (await ApiHandler().getCanceldRequest())!;
+  void _showNewRequestButtonSheet(
+      List<ServiceRequestModel> serviceRequests) async {
+    //TODO: replace this
+    // canceld = (await ApiHandler().getCanceldRequest())!;
 
-    if (statusRequest.length > oldRequestCount) {
-      Navigator.popAndPushNamed(context, "Home");
-    }
-  }
-
-  void _getTechnicianRequests() async {
-    loading = true;
-
-    statusRequest = (await ApiHandler().getTechnicianRequests())!;
-    canceld = (await ApiHandler().getCanceldRequest())!;
-
-    if (statusRequest.length > oldRequestCount) {
-      if (statusRequest.length > 0) {
-        if (statusRequest.any((requ) => requ.requestStatus == "PENDING")) {
-          showModalBottomSheet(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              context: context,
-              builder: (context) {
-                return Container(
-                    alignment: Alignment.center,
-                    height: 300,
-                    decoration: BoxDecoration(color: Colors.transparent),
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.all(4),
-                    child: ListView.builder(
-                        itemCount: statusRequest.length,
-                        itemBuilder: (context, index) {
-                          return (statusRequest[index].requestStatus ==
-                                      "PENDING" &&
-                                  !canceldList.contains(index))
-                              ? (SpecificSingleOfferCard(
-                                  time: changeToAmPm(
-                                      statusRequest[index].schedule.time),
-                                  date: getUsDateFormat(
-                                      statusRequest[index].schedule.date),
-                                  requestId: statusRequest[index].id,
-                                  request: statusRequest[index],
-                                  cancelOffer: (() {
-                                    setState(() {
-                                      canceldList.add(index);
-                                    });
-                                  })))
-                              : SizedBox();
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        context: context,
+        builder: (context) {
+          return Container(
+              alignment: Alignment.center,
+              height: 300,
+              decoration: BoxDecoration(color: Colors.transparent),
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.all(4),
+              child: ListView.builder(
+                  itemCount: serviceRequests.length,
+                  itemBuilder: (context, index) {
+                    return SpecificSingleOfferCard(
+                        time:
+                            changeToAmPm(serviceRequests[index].schedule.time),
+                        date: getUsDateFormat(
+                            serviceRequests[index].schedule.date),
+                        requestId: serviceRequests[index].id,
+                        request: serviceRequests[index],
+                        cancelOffer: (() {
+                          setState(() {
+                            canceldList.add(index);
+                          });
                         }));
-              });
-        }
-        setState(() {
-          count = statusRequest.length;
-          oldRequestCount = statusRequest.length;
+                  }));
         });
-      }
-
-      setState(() {
-        count = statusRequest.length;
-// oldRequestCount = statusRequest.length;
-        loading = false;
-      });
-    }
-
-    // if(statusRequest.any((element) => element.requestStatus == "PENDING")){
-    //   setState(() {
-    //     bottomSheetShown = true;
-    //   });
-    // }
-
-// print("YESS: "+ statusRequest[0].customerId);
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
   updateNotificationBaj() async {
@@ -293,7 +261,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void getProfiles() async {
-    profileDetail = (await ApiHandler().getProfile())!;
+    profileDetail = (await ApiHandler().getProfile());
 
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
           profileDetail = profileDetail;
@@ -322,7 +290,7 @@ class _MapScreenState extends State<MapScreen> {
                   "Are you sure you want to go offline and close the app?",
                   "No",
                   "Yes", (() {
-                Navigator.pop(context);
+                Get.back();
               }), (() async {
                 Loading(context);
                 await ApiHandler().changeStatus(0.0, 0.0, false, context, (() {
@@ -383,7 +351,7 @@ class _MapScreenState extends State<MapScreen> {
                                           listen: false)
                                       .changeTechnicianState(!stateNow);
 
-                                  Navigator.popAndPushNamed(context, "Home");
+                                  Get.offAndToNamed(homePage);
                                 },
                                 child: Image.asset(
                                   //  key: toggle,
@@ -428,8 +396,7 @@ class _MapScreenState extends State<MapScreen> {
 
                                     //       Provider.of<StateProvider>(context,listen: false).changeTechnicianState(!stateNow);
 
-                                    Navigator.pushNamed(
-                                        context, "Notification");
+                                    Get.toNamed(notificationPage);
                                   },
                                   child: Container(
                                       margin: EdgeInsets.fromLTRB(0, 10, 0, 0),

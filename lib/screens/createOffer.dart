@@ -1,20 +1,15 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:panda_technician/apiHandler/apiHandler.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/components/offerComponents/singleOffer.dart';
 import 'package:panda_technician/models/DetailedOffer.dart';
-import 'package:panda_technician/models/RequestsModel.dart';
 import 'package:panda_technician/models/offer.dart';
 import 'package:panda_technician/models/requests/detailedRequest.dart';
-import 'package:panda_technician/screens/requests/MapScreen.dart';
 
 class CreateOffer extends StatefulWidget {
-  CreateOffer({super.key, required this.arguments});
-  DetailedRequest arguments;
+  CreateOffer({super.key});
 
   @override
   State<CreateOffer> createState() => _CreateOfferState();
@@ -26,16 +21,18 @@ class _CreateOfferState extends State<CreateOffer> {
   Offer offerList = Offer(items: []);
   TextEditingController taxController = TextEditingController();
   double discount = 0;
+  late DetailedRequest arguments;
 
   @override
   void initState() {
     super.initState();
+    arguments = Get.arguments;
     // Future(_showJobList(context));
     // Use either of them.
     _offerCount = 13;
     offe = 1;
     //  offerList = Offer(items: []);
-    offerList.title = widget.arguments.request.description.title;
+    offerList.title = arguments.request.description.title;
     offerList.note = "";
     offerList.items.add(Item(title: "", price: "0"));
 
@@ -105,7 +102,7 @@ class _CreateOfferState extends State<CreateOffer> {
                               margin: const EdgeInsets.fromLTRB(10, 40, 0, 0),
                               child: TextButton(
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Get.back();
                                 },
                                 child: const Text(
                                   'CANCEL',
@@ -124,14 +121,12 @@ class _CreateOfferState extends State<CreateOffer> {
                               margin: const EdgeInsets.fromLTRB(0, 40, 10, 0),
                               child: TextButton(
                                 onPressed: () {
-                                  offerList.requestId =
-                                      widget.arguments.request.id;
+                                  offerList.requestId = arguments.request.id;
                                   offerList.totalEstimation =
                                       getTotal().toString();
 
-                                  widget.arguments.request.requestStatus =
-                                      "ESTIMATED";
-                                  widget.arguments.estimation = offerList;
+                                  arguments.request.requestStatus = "ESTIMATED";
+                                  arguments.estimation = offerList;
                                   if (offerList.title == "") {
                                     DialogBox(
                                         context,
@@ -139,9 +134,9 @@ class _CreateOfferState extends State<CreateOffer> {
                                         "You must enter a title ",
                                         "Cancel",
                                         "Ok", (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }), (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }));
                                   } else if (offerList.items.length == 0) {
                                     DialogBox(
@@ -150,9 +145,9 @@ class _CreateOfferState extends State<CreateOffer> {
                                         "You must add at list one item ",
                                         "Cancel",
                                         "Ok", (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }), (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }));
                                   } else if (offerList.note == "") {
                                     DialogBox(
@@ -161,18 +156,18 @@ class _CreateOfferState extends State<CreateOffer> {
                                         "You must add a Note ",
                                         "Cancel",
                                         "Ok", (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }), (() {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     }));
                                   } else {
-                                    Navigator.pushNamed(context, "DisplayOffer",
+                                    Get.toNamed("DisplayOffer",
                                         arguments: DetailedOffer(
-                                            detailedRequest: widget.arguments,
+                                            detailedRequest: arguments,
                                             offer: offerList));
                                   }
-                                  // Navigator.pushNamed(context, "JobDetail",arguments:  RequestsModel(id: 3) );
-                                  // ApiHandler().sendOffer(offerList, context, widget.arguments);
+                                  // Get.toNamed("JobDetail",arguments:  ServiceRequestModelodel(id: 3) );
+                                  // ApiHandler().sendOffer(offerList, context, arguments);
                                 },
                                 child: const Text(
                                   'SAVE',
@@ -221,8 +216,7 @@ class _CreateOfferState extends State<CreateOffer> {
                               contentPadding:
                                   const EdgeInsets.fromLTRB(10, 0, 0, 0),
                               border: InputBorder.none,
-                              hintText:
-                                  widget.arguments.request.description.title,
+                              hintText: arguments.request.description.title,
                             ),
                           )),
                       const SizedBox(

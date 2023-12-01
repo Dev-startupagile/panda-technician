@@ -1,31 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
-import 'package:panda_technician/components/flow/ProgressTracker.dart';
+import 'package:panda_technician/app/modal/auto_service/service_request_model.dart';
+import 'package:panda_technician/app/modules/job_offer/job_offer.controller.dart';
 import 'package:panda_technician/components/flow/ratingCard.dart';
 import 'package:panda_technician/components/globalComponents/displayImage.dart';
 import 'package:panda_technician/components/imageComponents/curvedImage.dart';
 import 'package:panda_technician/components/messageComponents/centredMessage.dart';
-import 'package:panda_technician/models/RequestsModel.dart';
-import 'package:panda_technician/models/profile.dart';
-import 'package:panda_technician/models/requests/detailedRequest.dart';
-import 'package:panda_technician/models/requests/detailedRequestM.dart';
-import 'package:panda_technician/models/requests/requests.dart';
-import 'package:panda_technician/models/requests/viewDetailRequests.dart';
-import 'package:panda_technician/models/requests/watchRequestDetail.dart';
+import 'package:panda_technician/app/modal/auto_service/watchRequestDetail.dart';
+import 'package:panda_technician/helper/dialog_helper.dart';
 import 'package:panda_technician/models/service/service.dart';
 import 'package:panda_technician/models/vehicle/vehicle.dart';
-import 'package:panda_technician/screens/createOffer.dart';
-import 'package:panda_technician/screens/profile/profile.dart';
 import 'package:panda_technician/services/serviceDate.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:panda_technician/services/serviceLocation.dart';
 
 class JobDetail extends StatefulWidget {
-  JobDetail({super.key, required this.arguments});
-  watchDetailedRequest arguments;
+  JobDetail({super.key});
   // int statusIndex;
 
   @override
@@ -35,24 +27,29 @@ class JobDetail extends StatefulWidget {
 class _JobDetailState extends State<JobDetail> {
   int statusIndex = 0;
 // CalendarController _controller;
-  late DetailedRequestDetail request;
+  late ServiceRequestModel request;
   late Vehicle vehicle;
   late Service service;
   String areaName = "";
+
+  final JobOfferController jobOfferController = Get.find<JobOfferController>();
+  late WatchDetailedRequest arguments;
+
   @override
   void initState() {
+    arguments = Get.arguments;
     super.initState();
-    request = widget.arguments.request;
-    vehicle = widget.arguments.vehicle;
-    service = widget.arguments.service;
+    request = arguments.request;
+    vehicle = arguments.vehicle;
+    service = arguments.service;
     getAreaName();
-    statusIndex = widget.arguments.request.requestStatus == "ACCEPTED"
+    statusIndex = arguments.request.requestStatus == "ACCEPTED"
         ? 0
-        : widget.arguments.request.requestStatus == "ON_MY_WAY"
+        : arguments.request.requestStatus == "ON_MY_WAY"
             ? 1
-            : widget.arguments.request.requestStatus == "ARRIVED"
+            : arguments.request.requestStatus == "ARRIVED"
                 ? 2
-                : widget.arguments.request.requestStatus == "COMPLETED"
+                : arguments.request.requestStatus == "COMPLETED"
                     ? 3
                     : 0;
     // _controller = CalendarController();
@@ -60,8 +57,8 @@ class _JobDetailState extends State<JobDetail> {
 
   getAreaName() async {
     List name = jsonDecode(await ApiHandler().getLocationName(
-        widget.arguments.request.serviceLocation.latitude,
-        widget.arguments.request.serviceLocation.longitude))["results"];
+        arguments.request.serviceLocation.latitude,
+        arguments.request.serviceLocation.longitude))["results"];
     if (name.length > 0) {
       setState(() {
         areaName = name[0]["formatted_address"];
@@ -287,7 +284,7 @@ class _JobDetailState extends State<JobDetail> {
                                     offset: Offset.fromDirection(1.3))
                               ]),
                           width: MediaQuery.of(context).size.width * 0.95,
-                          height: 500,
+                          height: 580,
                           child: Column(children: <Widget>[
                             Container(
                                 margin: const EdgeInsets.all(10),
@@ -336,6 +333,38 @@ class _JobDetailState extends State<JobDetail> {
                                     // Text(request.price.diagnosticFee.toString(), style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold, color: Colors.green[200])),
                                   ],
                                 )),
+                            if (request.isScheduled)
+                              Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  alignment: Alignment.topLeft,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 10),
+                                  decoration: BoxDecoration(
+                                      color: Colors.lightGreenAccent,
+                                      border:
+                                          Border.all(style: BorderStyle.solid),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  margin:
+                                      const EdgeInsets.fromLTRB(20, 10, 0, 10),
+                                  child: Column(
+                                    children: [
+                                      const Text(
+                                        "This Job is scheduled!",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        "  @ ${getUsDateFormat(request.schedule.date)} ${changeToAmPm(request.schedule.time)}",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  )),
                             Container(
                               width: MediaQuery.of(context).size.width,
                               alignment: Alignment.topLeft,
@@ -528,9 +557,14 @@ class _JobDetailState extends State<JobDetail> {
                               color: Colors.grey.shade700),
                           margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                           child: TextButton(
-                            onPressed: () {
-                              ApiHandler()
-                                  .AcceptJob(request.id, context, request);
+                            onPressed: () async {
+                              // await jobOfferController.acceptJob(
+                              //     request.id, request);
+                              if (request.isScheduled) {
+                                DialogHelper.showGetXPop(
+                                    "Schedulled Job Accepted",
+                                    "We will send you reminder when apointment is due!");
+                              }
                             },
                             child: Text(
                               "Accept Job",

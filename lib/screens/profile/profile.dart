@@ -4,12 +4,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
+import 'package:panda_technician/app/service/app_setting_service.dart';
 import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/messageComponents/centredMessage.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/components/tags/singleTag.dart';
 import 'package:panda_technician/models/profile.dart';
+import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/screens/profile/stripeWebview.dart';
 import 'package:panda_technician/services/firstTimeRun.dart';
 import 'package:panda_technician/store/profileProvider.dart';
@@ -17,8 +20,6 @@ import '../../components/globalComponents/Footer.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../util/constant.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -35,6 +36,7 @@ class _ProfileState extends State<Profile> {
 
   String strapiToken = "";
   Map<String, dynamic> stripeRetrieveAccountData = {};
+  AppSettingService _appSettingService = Get.find<AppSettingService>();
 
   @override
   void initState() {
@@ -50,7 +52,8 @@ class _ProfileState extends State<Profile> {
     var token = prefs.getString("apiToken");
 
     var response = await http.get(
-      Uri.parse('${ApiConstants.baseUrl}account/connectAccountLink'),
+      Uri.parse(
+          '${_appSettingService.config.baseURL}/account/connectAccountLink'),
       headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
     );
 
@@ -65,7 +68,8 @@ class _ProfileState extends State<Profile> {
     var token = prefs.getString("apiToken");
 
     var response = await http.post(
-      Uri.parse('${ApiConstants.baseUrl}account/get/connectedAccount'),
+      Uri.parse(
+          '${_appSettingService.config.baseURL}/account/get/connectedAccount'),
       headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
     );
     setState(() {
@@ -169,7 +173,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context, "EditProfile");
+                                  Get.toNamed(editProfile);
                                 },
                                 child: Text(
                                   "Edit",
@@ -182,7 +186,7 @@ class _ProfileState extends State<Profile> {
                           ico: Icons.miscellaneous_services_sharp,
                           title: "Services",
                           callBackHandler: (() {
-                            Navigator.pushNamed(context, "ServiceSetting");
+                            Get.toNamed(serviceSetting);
                           })),
                       SingleTag(
                           ico: Icons.payments_outlined,
@@ -201,22 +205,22 @@ class _ProfileState extends State<Profile> {
                                 stripeRetrieveAccountData[
                                         "details_submitted"] ==
                                     false) {
-                              // Navigator.pop(context);
+                              // Get.back();
                               DialogBox(context, "Message", "Already Connected",
                                   "Cancel", "Ok", (() {
-                                Navigator.pop(context);
+                                Get.back();
                               }), (() {
-                                Navigator.pop(context);
+                                Get.back();
                               }));
                               return;
                             }
-                            // Navigator.pushNamed(context, "Payment");
+                            // Get.toNamed("Payment");
                             final prefs = await SharedPreferences.getInstance();
                             var token = prefs.getString("apiToken");
                             Loading(context);
                             var response = await http.get(
                               Uri.parse(
-                                  '${ApiConstants.baseUrl}account/connectAccountLink'),
+                                  '${_appSettingService.config.baseURL}/account/connectAccountLink'),
                               headers: {
                                 HttpHeaders.authorizationHeader: "Bearer $token"
                               },
@@ -230,15 +234,15 @@ class _ProfileState extends State<Profile> {
                                 json.decode(response.body)["url"] ?? "empty";
 
                             if (authUrl == "empty") {
-                              Navigator.pop(context);
+                              Get.back();
                               DialogBox(context, "Message", "Already Connected",
                                   "Cancel", "Ok", (() {
-                                Navigator.pop(context);
+                                Get.back();
                               }), (() {
-                                Navigator.pop(context);
+                                Get.back();
                               }));
                             } else {
-                              Navigator.pop(context);
+                              Get.back();
 
                               Navigator.push(
                                   context,
@@ -263,31 +267,31 @@ class _ProfileState extends State<Profile> {
                           ico: Icons.pause_presentation_rounded,
                           title: "Terms of Service",
                           callBackHandler: (() {
-                            Navigator.pushNamed(context, "TermsAndService");
+                            Get.toNamed(termsAndService);
                           })),
                       SingleTag(
                           ico: Icons.privacy_tip,
                           title: "Privacy Policy",
                           callBackHandler: (() {
-                            Navigator.pushNamed(context, "PrivacyPolicy");
+                            Get.toNamed(privacyPolicy);
                           })),
                       SingleTag(
                           ico: Icons.help,
                           title: "Help",
                           callBackHandler: (() {
-                            Navigator.pushNamed(context, "Help");
+                            Get.toNamed(help);
                           })),
                       SingleTag(
                           ico: Icons.question_answer,
                           title: "FAQ",
                           callBackHandler: (() {
-                            Navigator.pushNamed(context, "Faq");
+                            Get.toNamed(faq);
                           })),
                       SingleTag(
                           ico: Icons.settings,
                           title: "Settings",
                           callBackHandler: (() {
-                            Navigator.pushNamed(context, "Settings");
+                            Get.toNamed(settingsPage);
                           })),
                       SingleTag(
                           ico: Icons.logout,
@@ -303,7 +307,7 @@ class _ProfileState extends State<Profile> {
                       //       child: TextButton(
                       //           onPressed: () {
                       //             DialogBox(context, "Message", "Are you sure you want to delete your account", "No", "Yes", ((){
-                      //                 Navigator.pop(context);
+                      //                 Get.back();
                       //             }), ((){
                       //               ApiHandler().deleteAccount(profile.id, context);
                       //             }));

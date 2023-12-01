@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 // ignore: unnecessary_import
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 // ignore: depend_on_referenced_packages
 import 'package:panda_technician/apiHandler/apiHandler.dart';
@@ -18,8 +19,7 @@ import 'package:panda_technician/services/validationServices.dart';
 
 // ignore: must_be_immutable
 class CreateAccount2 extends StatefulWidget {
-  CreateAccount2({super.key, required this.arguments});
-  SignUp arguments;
+  CreateAccount2({super.key});
   @override
   State<CreateAccount2> createState() => _CreateAccount2State();
 }
@@ -36,9 +36,12 @@ class _CreateAccount2State extends State<CreateAccount2> {
   TextEditingController streetController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController stateController = TextEditingController();
+  late SignUp arguments;
+
   @override
   void initState() {
     super.initState();
+    arguments = Get.arguments;
     streetList = [];
   }
 
@@ -122,13 +125,13 @@ class _CreateAccount2State extends State<CreateAccount2> {
                                     stateController.text = streetList[index]
                                             ["description"]
                                         .split(",")[2];
-                                    widget.arguments.street = streetList[index]
+                                    arguments.street = streetList[index]
                                             ["description"]
                                         .split(",")[0];
-                                    widget.arguments.city = streetList[index]
+                                    arguments.city = streetList[index]
                                             ["description"]
                                         .split(",")[1];
-                                    widget.arguments.state = streetList[index]
+                                    arguments.state = streetList[index]
                                             ["description"]
                                         .split(",")[2];
                                     street = streetList[index]["description"]
@@ -209,7 +212,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
                   TextFiledCustom(
                     updateCallback: ((value) {
                       zipcode = value;
-                      widget.arguments.zipCode = int.parse(value);
+                      arguments.zipCode = int.parse(value);
                     }),
                     preIcon: Icons.code,
                     hintText: "Zip Code",
@@ -217,7 +220,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
                     isZipCode: true,
                     isEmail: false,
                     isNumber: true,
-                    isError: widget.arguments.zipCode.toString().length != 5
+                    isError: arguments.zipCode.toString().length != 5
                         ? (errorForm == 404)
                             ? true
                             : errorForm == 4
@@ -236,7 +239,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
                   ),
                   TextFiledCustom(
                     updateCallback: ((value) {
-                      widget.arguments.hourlyFee = int.parse(value);
+                      arguments.hourlyFee = int.parse(value);
                     }),
                     preIcon: Icons.attach_money,
                     hintText: "Hourly Fee",
@@ -244,7 +247,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
                     isZipCode: false,
                     isEmail: false,
                     isNumber: true,
-                    isError: widget.arguments.hourlyFee == 0
+                    isError: arguments.hourlyFee == 0
                         ? (errorForm == 404)
                             ? true
                             : errorForm == 5
@@ -263,7 +266,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
                   ),
                   TextFiledCustom(
                     updateCallback: ((value) {
-                      widget.arguments.diagnosticFee = int.parse(value);
+                      arguments.diagnosticFee = int.parse(value);
                     }),
                     preIcon: Icons.attach_money,
                     hintText: "Diagnostic Fee",
@@ -271,7 +274,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
                     isZipCode: false,
                     isEmail: false,
                     isNumber: true,
-                    isError: widget.arguments.diagnosticFee == 0
+                    isError: arguments.diagnosticFee == 0
                         ? (errorForm == 404)
                             ? true
                             : errorForm == 6
@@ -316,7 +319,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
                   ((isCompany)
                       ? TextFiledCustom(
                           updateCallback: ((value) {
-                            widget.arguments.companyName = value;
+                            arguments.companyName = value;
                           }),
                           preIcon: Icons.house,
                           hintText: "Company Name",
@@ -345,7 +348,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, "TermsAndService");
+                          Get.toNamed("TermsAndService");
                         },
                         child: const Text(
                           "Terms & Conditions",
@@ -367,12 +370,12 @@ class _CreateAccount2State extends State<CreateAccount2> {
                 margin: const EdgeInsets.all(10),
                 child: TextButton(
                   onPressed: () async {
-                    Message message = signUpFormValidation(
-                        widget.arguments, isAgreed, zipcode);
+                    Message message =
+                        signUpFormValidation(arguments, isAgreed, zipcode);
                     if (message.success) {
                       Loading(context);
-                      var response = await ApiHandler()
-                          .createAccount(widget.arguments, context);
+                      var response =
+                          await ApiHandler().createAccount(arguments, context);
                     } else {
                       setState(() {
                         errorForm = message.formIndex;

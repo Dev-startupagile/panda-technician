@@ -2,28 +2,27 @@
 
 import 'package:flutter/material.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
-import 'package:panda_technician/models/RequestsModel.dart';
-import 'package:panda_technician/screens/requests/StatusRequest.dart';
+import 'package:panda_technician/app/modal/auto_service/service_request_model.dart';
 import 'package:panda_technician/services/serviceDate.dart';
-import 'package:panda_technician/services/serviceMoney.dart';
 
-class mobileTechnician extends StatefulWidget {
-  mobileTechnician(
+class MobileTechnicianComponent extends StatefulWidget {
+  MobileTechnicianComponent(
       {super.key,
       required this.requestData,
       required this.diagnosticFee,
       required this.sender});
 
-//  RequestsModel requestData;
-  StatusRequest requestData;
+//  ServiceRequestModelodel requestData;
+  ServiceRequestModel requestData;
   int diagnosticFee;
   String sender;
 
   @override
-  State<mobileTechnician> createState() => _mobileTechnicianState();
+  State<MobileTechnicianComponent> createState() =>
+      _MobileTechnicianComponentState();
 }
 
-class _mobileTechnicianState extends State<mobileTechnician> {
+class _MobileTechnicianComponentState extends State<MobileTechnicianComponent> {
   String totalEstimation = "";
   @override
   void initState() {
@@ -35,10 +34,10 @@ class _mobileTechnicianState extends State<mobileTechnician> {
 
   getTotalEstimation() {
     print("PROFILE: " + widget.sender);
-    for (int x = 0; x < widget.requestData.offerDetail.length; x++) {
-      if (widget.requestData.offerDetail[x].sender == widget.sender) {
+    for (int x = 0; x < widget.requestData.offerDetail!.length; x++) {
+      if (widget.requestData.offerDetail![x].sender == widget.sender) {
         setState(() {
-          totalEstimation = widget.requestData.offerDetail[x].totalEstimation
+          totalEstimation = widget.requestData.offerDetail![x].totalEstimation
               .toString()
               .replaceAll(".0", "");
         });
@@ -82,8 +81,8 @@ class _mobileTechnicianState extends State<mobileTechnician> {
                         child: Text(
                             // ignore: prefer_interpolation_to_compose_strings
                             "\$" +
-                                (widget.requestData.offerDetail.length > 0
-                                    ? widget.requestData.offerDetail.any(
+                                (widget.requestData.offerDetail!.length > 0
+                                    ? widget.requestData.offerDetail!.any(
                                             (element) => (element.sender ==
                                                     widget.sender &&
                                                 element.isRejected))
@@ -93,7 +92,7 @@ class _mobileTechnicianState extends State<mobileTechnician> {
                             style: TextStyle(
                                 fontSize: 16,
                                 color:
-                                    (widget.requestData.offerDetail.length > 0)
+                                    (widget.requestData.offerDetail!.length > 0)
                                         ? Colors.blue[300]
                                         : Colors.black),
                             textAlign: TextAlign.end),
@@ -153,7 +152,7 @@ class _mobileTechnicianState extends State<mobileTechnician> {
                             image: DecorationImage(
                                 fit: BoxFit.cover,
                                 image: NetworkImage(widget
-                                    .requestData.vehiclesDetail[0].image)),
+                                    .requestData.vehiclesDetail![0].image)),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8.0)),
                             color: Colors.grey[300],
@@ -189,7 +188,7 @@ class _mobileTechnicianState extends State<mobileTechnician> {
                                   ),
                                   Text(
                                       widget
-                                          .requestData.vehiclesDetail[0].model,
+                                          .requestData.vehiclesDetail![0].model,
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                           fontSize: 14,
