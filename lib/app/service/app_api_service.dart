@@ -74,6 +74,22 @@ class AppApiService extends GetxService {
     }
   }
 
+  Future<APIResponse<T>> delete<T>(String path,
+      {Map<String, dynamic>? data,
+      Map<String, dynamic>? queryParameters,
+      dio.Options? options}) async {
+    try {
+      dio.Response<Map> response = await _dio.delete<Map>(path,
+          data: data, queryParameters: queryParameters, options: options);
+      if (response.data == null) throw NullHTTPReponseException(path, data);
+      return APIResponse<T>.fromMap(Map<String, dynamic>.from(response.data!));
+    } on dio.DioException catch (e) {
+      throw _handleDioError(e);
+    } on SocketException catch (e) {
+      throw UnknownHttpException('Pre error:', e.toString());
+    }
+  }
+
   Future<APIResponse<T>> authPost<T>(String path,
       {required dynamic data,
       Map<String, dynamic>? queryParameters,
@@ -111,6 +127,23 @@ class AppApiService extends GetxService {
       Map<String, dynamic>? queryParameters,
       dio.Options? options}) async {
     return await get(path,
+        data: data,
+        // ignore: prefer_if_null_operators
+        options: options == null
+            ? dio.Options(headers: {
+                'Authorization': 'Bearer ${_appAuthService.authToken}'
+              })
+            : dio.Options(headers: {
+                ...(options.headers ?? {}),
+                'Authorization': 'Bearer ${_appAuthService.authToken}'
+              }));
+  }
+
+  Future<APIResponse<T>> authDelete<T>(String path,
+      {Map<String, dynamic>? data,
+      Map<String, dynamic>? queryParameters,
+      dio.Options? options}) async {
+    return await delete(path,
         data: data,
         // ignore: prefer_if_null_operators
         options: options == null

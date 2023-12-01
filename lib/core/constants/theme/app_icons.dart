@@ -7,4 +7,21 @@ class AppIcons {
         height: 21.33.h,
         width: 21.33.w,
       );
+
+  static SvgPicture get googleIcon => SvgPicture.asset(
+        'assets/google_logo.svg',
+        height: 32,
+        width: 32,
+      );
+
+  static SvgPicture get facebookIcon => SvgPicture.asset(
+        'assets/facebook_logo.svg',
+        height: 32,
+        width: 32,
+      );
+  static SvgPicture get appleIcon => SvgPicture.asset(
+        'assets/apple_logo.svg',
+        height: 32,
+        width: 32,
+      );
 }

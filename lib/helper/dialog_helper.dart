@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:panda_technician/models/review_model.dart';
 import 'package:panda_technician/routes/route.dart';
+import 'package:panda_technician/widgets/rating_widget.dart';
 
 class DialogHelper {
   static void showGetXLoading() {
@@ -137,6 +139,92 @@ class DialogHelper {
       backgroundColor: Colors.white,
       duration: const Duration(seconds: 5),
       snackPosition: SnackPosition.BOTTOM,
+    );
+  }
+
+  static void showConfirmationDialog(
+      BuildContext context, String title, String msg, Function() callback) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context2) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(msg),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                // Close the dialog first
+                Navigator.pop(context);
+                callback();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static void showReviewPopup(BuildContext context, String name, String to,
+      String? requestId, Function(ReviewModel) callback) {
+    showDialog(
+      context: context,
+      useSafeArea: true,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(.1),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Expanded(child: Container()),
+                Material(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10))),
+                    child: Column(children: [
+                      const SizedBox(height: 5),
+                      const Text(
+                        "Review!",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w900, fontSize: 32),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        "Please review $name",
+                        style: const TextStyle(color: Color(0xffC0BFBD)),
+                      ),
+                      const SizedBox(height: 5),
+                      RatingWidget(
+                        requestId: requestId,
+                        to: to,
+                        callback: (review) {
+                          showConfirmationDialog(context, "Thank you!",
+                              "Successfully reviewed $name", () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            callback(review);
+                          });
+                        },
+                      )
+                    ]),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

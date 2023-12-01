@@ -4,7 +4,9 @@ import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
 import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
+import 'package:panda_technician/core/constants/theme/app_icons.dart';
 import 'package:panda_technician/routes/route.dart';
+import 'package:panda_technician/screens/auth/social_login_widget.dart';
 import 'package:panda_technician/services/firstTimeRun.dart';
 
 class Login extends StatefulWidget {
@@ -22,10 +24,11 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     // isAlready();
-    email = "baslielselamu2018+tppp@gmail.com";
-    password = "Ap2334@56";
+    // email = "baslielselamu2018+tppp@gmail.com";
+    // password = "Ap2334@56";
   }
 
+  ApiHandler _apiHandler = ApiHandler();
   isAlready() {
     bool lod = isAlreadyLoagedIn(context);
     if (!lod) return;
@@ -114,8 +117,7 @@ class _LoginState extends State<Login> {
                     child: TextButton(
                       onPressed: () async {
                         Loading(context);
-                        var response =
-                            await ApiHandler().login(email, password);
+                        var response = await _apiHandler.login(email, password);
 
                         if (response) {
                           // ignore: use_build_context_synchronously
@@ -145,7 +147,7 @@ class _LoginState extends State<Login> {
                         ),
                         TextButton(
                             onPressed: () {
-                              Get.toNamed(createAccount);
+                              Get.toNamed(signUpMethodScreen);
                             },
                             child: const Text(
                               " Sign Up Now",
@@ -156,7 +158,56 @@ class _LoginState extends State<Login> {
                               textAlign: TextAlign.center,
                             ))
                       ],
-                    ))
+                    )),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                              child: Container(
+                                  height: 1,
+                                  color:
+                                      const Color.fromARGB(255, 79, 78, 78))),
+                          const SizedBox(width: 5),
+                          const Text("OR"),
+                          const SizedBox(width: 5),
+                          Expanded(
+                              child: Container(
+                                  height: 1,
+                                  color:
+                                      const Color.fromARGB(255, 79, 78, 78))),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      SocialLoginBtn(
+                          fillColor: Colors.white,
+                          icon: AppIcons.googleIcon,
+                          textColor: const Color.fromRGBO(0, 0, 0, 1),
+                          isSignIn: true,
+                          onTap: () => _apiHandler.signInWithSocial(
+                              true, AvaliableSocialLogin.google),
+                          name: "Google"),
+                      SocialLoginBtn(
+                          fillColor: Colors.white,
+                          icon: AppIcons.appleIcon,
+                          textColor: Colors.black,
+                          isSignIn: true,
+                          onTap: () => {},
+                          name: "Apple"),
+                      SocialLoginBtn(
+                          fillColor: const Color(0xff1877f2),
+                          icon: AppIcons.facebookIcon,
+                          textColor: Colors.white,
+                          isSignIn: true,
+                          onTap: () => _apiHandler.signInWithSocial(
+                              true, AvaliableSocialLogin.facebook),
+                          name: "Facebook"),
+                    ],
+                  ),
+                ),
               ],
             ))));
   }

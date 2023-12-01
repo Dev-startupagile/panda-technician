@@ -4,7 +4,7 @@ description: A new Flutter project.
 publish_to: "none"
 
 
-version: 1.0.9+9
+version: 1.0.15+15
 
 environment:
   sdk: ">=2.18.4 <3.0.0"
@@ -56,6 +56,7 @@ dependencies:
   cloud_firestore: ^4.3.0
   amplify_api: ^1.5.0
   amplify_flutter: ^1.5.0 
+  amplify_auth_cognito: ^1.6.0
   get: ^4.6.5
   flutter_screenutil: ^5.9.0
   flutter_svg: ^2.0.8
@@ -83,6 +84,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - assets/HeaderLogo.png
     - assets/car.png
     - assets/avater.png

@@ -87,22 +87,23 @@ class DetailedRequestM {
 }
 
 class Info {
-  Info({
-    this.phoneNumber = "",
-    this.userRole = "",
-    this.subscription = "",
-    required this.createdAt,
-    this.fullName = "",
-    this.state = "",
-    this.city = "",
-    this.isActive = false,
-    this.userId = "",
-    this.profilePicture = "",
-    required this.updatedAt,
-    this.id = "",
-    this.zipCode = 000,
-    this.street = "",
-  });
+  Info(
+      {this.phoneNumber = "",
+      this.userRole = "",
+      this.subscription = "",
+      required this.createdAt,
+      this.fullName = "",
+      this.state = "",
+      this.city = "",
+      this.isActive = false,
+      this.userId = "",
+      this.profilePicture = "",
+      required this.updatedAt,
+      this.id = "",
+      this.zipCode = 000,
+      this.street = "",
+      required this.rating,
+      required this.reviewCount});
 
   String phoneNumber;
   String userRole;
@@ -119,6 +120,9 @@ class Info {
   int zipCode;
   String street;
 
+  double rating;
+  int reviewCount;
+
   factory Info.fromJson(Map<String, dynamic> json) => Info(
         phoneNumber: json["phoneNumber"],
         userRole: json["userRole"],
@@ -134,6 +138,8 @@ class Info {
         id: json["id"],
         zipCode: json["zipCode"],
         street: json["street"],
+        rating: (json["rating"] ?? 0) / 1,
+        reviewCount: json["reviewCount"] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -151,5 +157,7 @@ class Info {
         "id": id,
         "zipCode": zipCode,
         "street": street,
+        "rating": rating,
+        "reviewCount": reviewCount,
       };
 }

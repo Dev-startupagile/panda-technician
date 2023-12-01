@@ -4,6 +4,7 @@ import 'package:panda_technician/app/service/app_amplify_service.dart';
 import 'package:panda_technician/app/service/app_api_service.dart';
 import 'package:panda_technician/app/service/app_auth_service.dart';
 import 'package:panda_technician/app/service/app_logger.dart';
+import 'package:panda_technician/app/service/app_rating_service.dart';
 import 'package:panda_technician/app/service/app_setting_service.dart';
 import 'package:panda_technician/app/service/app_storage_service.dart';
 import 'package:panda_technician/services/fcmService.dart';
@@ -12,9 +13,6 @@ Future<void> initAppService() async {
   //App FCM Notificaiton
   await FCMService.init();
 
-  await PandaAmplify.configureAmplify();
-
-  //App storage service
   await PandaAmplify.configureAmplify();
 
   Get.put<AppLoggerService>(AppLoggerService());
@@ -40,6 +38,8 @@ Future<void> initAppService() async {
 
   var appAPIService = AppApiService();
   Get.put<AppApiService>(appAPIService);
+
+  Get.put<RatingReviewService>(RatingReviewService());
 
   // appAuthService.setRepository(AppAuthRepository());
   // FlutterNativeSplash.remove();

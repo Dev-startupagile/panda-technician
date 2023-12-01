@@ -5,6 +5,7 @@ import 'package:panda_technician/screens/auth/creatAccount2.dart';
 import 'package:panda_technician/screens/auth/createAccount.dart';
 import 'package:panda_technician/screens/auth/emailVerify.dart';
 import 'package:panda_technician/screens/auth/signUpVerification.dart';
+import 'package:panda_technician/screens/auth/sign_up_method_screen.dart';
 import 'package:panda_technician/screens/auth/verificationScreen.dart';
 import 'package:panda_technician/screens/createOffer.dart';
 import 'package:panda_technician/screens/notification/notifications.dart';
@@ -67,6 +68,7 @@ const String createAccount = "/CreateAccount";
 
 const String settingsPage = "/settingsPage";
 const String technicianTransactionPage = "/technicianTransactionPage";
+const String signUpMethodScreen = "/signUpMethodScreen";
 
 List<GetPage> getPages = [
   GetPage(name: initPage, page: () => const OnboardingSlider()),
@@ -97,6 +99,7 @@ List<GetPage> getPages = [
   GetPage(name: emailVerify, page: () => const EmailVerify()),
   GetPage(name: forgetPassword, page: () => const fp.ForgetPassword()),
   GetPage(name: createAccount, page: () => const CreateAccount()),
+  GetPage(name: signUpMethodScreen, page: () => const SignUpMethodScreen()),
   GetPage(name: editOffer, page: () => EditOffer()),
   GetPage(name: settingsPage, page: () => Settings()),
   GetPage(name: updateDisplayOffer, page: () => UpdateDisplayOffer()),

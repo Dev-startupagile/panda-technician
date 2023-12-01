@@ -230,6 +230,74 @@ Message signUpFormValidation1(SignUp userDetail, bool termsAndConditions) {
   return message;
 }
 
+Message signUpFormValidation0(SignUp userDetail) {
+  // ignore: unused_local_variable
+  bool isFormValid = true;
+
+  if (!emailValidate(userDetail.email)) {
+    isFormValid = false;
+    Message message =
+        Message(success: false, message: "Incorrect Email", formIndex: 5);
+
+    return message;
+  }
+
+  if (userDetail.password == "") {
+    isFormValid = false;
+    Message message =
+        Message(success: false, message: "Password  Not Added", formIndex: 4);
+
+    return message;
+  } else {
+    if (!is8Char(userDetail.password)) {
+      isFormValid = false;
+      Message message = Message(
+          success: false,
+          message: "Password must be at list 8 characters",
+          formIndex: 4);
+
+      return message;
+    } else if (!containsLowerCase(userDetail.password)) {
+      isFormValid = false;
+      Message message = Message(
+          success: false,
+          message: "Password must contain lowerCase letters",
+          formIndex: 4);
+
+      return message;
+    } else if (!containsUpperCase(userDetail.password)) {
+      isFormValid = false;
+      Message message = Message(
+          success: false,
+          message: "Password must contain upperCase Letter",
+          formIndex: 4);
+
+      return message;
+    } else if (!containsNumb(userDetail.password)) {
+      isFormValid = false;
+      Message message = Message(
+          success: false,
+          message: "Password must contain numbers",
+          formIndex: 4);
+
+      return message;
+    } else if (!containsSymbols(userDetail.password)) {
+      isFormValid = false;
+      Message message = Message(
+          success: false,
+          message: "Password must contain symbols",
+          formIndex: 4);
+
+      return message;
+    }
+  }
+
+  Message message =
+      Message(success: true, message: "Account Created Succesfully");
+
+  return message;
+}
+
 bool is8Char(String password) {
   if (password.length >= 8) {
     return true;

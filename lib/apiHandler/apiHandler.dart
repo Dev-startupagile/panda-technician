@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +14,7 @@ import 'package:panda_technician/app/service/app_setting_service.dart';
 import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
+import 'package:panda_technician/core/constants/constants.dart';
 import 'package:panda_technician/models/bankInfo.dart';
 import 'package:panda_technician/models/globalModels/schedule.dart';
 import 'package:panda_technician/models/offer.dart';
@@ -31,6 +33,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+enum AvaliableSocialLogin { google, facebook, apple }
 
 class ApiHandler {
   AppSettingService _appSettingService = Get.find<AppSettingService>();
@@ -669,7 +673,51 @@ class ApiHandler {
     //results[0]["formatted_address"]
   }
 
-  login(String email, String password) async {
+  Future<bool> signInWithSocial(
+      bool signIn, AvaliableSocialLogin socialLogin) async {
+    AuthProvider authProvider = socialLogin == AvaliableSocialLogin.google
+        ? AuthProvider.google
+        : socialLogin == AvaliableSocialLogin.facebook
+            ? AuthProvider.facebook
+            : AuthProvider.apple;
+    print("Signed in with $socialLogin");
+    SignInResult res =
+        await Amplify.Auth.signInWithWebUI(provider: authProvider);
+    print("Sign in result ${res.isSignedIn}");
+    if (res.isSignedIn) {
+      try {
+        List<AuthUserAttribute> listOfAttr =
+            await Amplify.Auth.fetchUserAttributes();
+        String email = listOfAttr
+            .firstWhere((element) => element.userAttributeKey.key == "email")
+            .value;
+        // AuthSession session = await Amplify.Auth.fetchAuthSession();
+
+        // ac.JsonWebToken token = (session as ac.CognitoAuthSession)
+        //     .userPoolTokensResult
+        //     .value
+        //     .accessToken;
+        // print("JWT Token: $token");
+        print("User's email: $email");
+        // Send email and JWT token to backend
+        // ignore: use_build_context_synchronously
+
+        if (signIn) {
+          return login(email, AppConstants.kDefaultPassword);
+        } else {
+          Get.toNamed("CreateAccount",
+              arguments: new SignUp(
+                  email: email, password: AppConstants.kDefaultPassword));
+          return true;
+        }
+      } catch (e) {
+        print("Error getting user data: $e");
+      }
+    }
+    return false;
+  }
+
+  Future<bool> login(String email, String password) async {
     try {
       String fcmToken = "";
       final prefs = await SharedPreferences.getInstance();
@@ -701,6 +749,7 @@ class ApiHandler {
     } catch (e) {
       print("Error: " + e.toString());
     }
+    return false;
   }
 
   verifyAccount(String email, String verificationCode) async {

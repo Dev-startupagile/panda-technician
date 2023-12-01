@@ -26,9 +26,9 @@ class CreateAccount extends StatefulWidget {
 
 class _CreateAccountState extends State<CreateAccount> {
   final ImagePicker _picker = ImagePicker();
-  SignUp userDetail = SignUp();
+  // SignUp userDetail = SignUp();
+  SignUp userDetail = Get.arguments;
 
-  var confirmedPassword = "";
   var errorForm = 0;
   var toBeconfirmed = "";
   var updated = true;
@@ -38,7 +38,6 @@ class _CreateAccountState extends State<CreateAccount> {
   void initState() {
     super.initState();
     userDetail.userRole = "technician";
-    confirmedPassword = "";
     updated = true;
   }
 
@@ -311,18 +310,6 @@ class _CreateAccountState extends State<CreateAccount> {
                         isNumber: false,
                         isError: errorForm == 2,
                       ),
-                      TextFiledCustom(
-                        updateCallback: ((value) {
-                          userDetail.email = value;
-                        }), // this is to avoid they are watching me so i wont' be doing what they are thiking about
-                        preIcon: Icons.email,
-                        hintText: "Email",
-                        isPassword: false,
-                        isZipCode: false,
-                        isEmail: true,
-                        isNumber: false,
-                        isError: errorForm == 5,
-                      ),
                       Container(
                         width: 340,
                         height: 60,
@@ -363,158 +350,6 @@ class _CreateAccountState extends State<CreateAccount> {
                               signed: true, decimal: true),
                         ),
                       ),
-                      TextFiledCustom(
-                        updateCallback: ((value) {
-                          userDetail.password = value;
-                          if (is8Char(value) &&
-                              containsLowerCase(value) &&
-                              containsUpperCase(value) &&
-                              containsSymbols(value) &&
-                              containsNumb(value)) {
-                            errorForm = 0;
-                          }
-                          setState(() {
-                            confirmedPassword = value;
-                            updated = !updated;
-                          });
-                        }),
-                        preIcon: Icons.person,
-                        hintText: "Password",
-                        isPassword: true,
-                        isZipCode: false,
-                        isEmail: false,
-                        isNumber: false,
-                        isError: errorForm == 4,
-                      ),
-                      if (userDetail.password.isNotEmpty)
-                        Container(
-                          width: 340,
-                          margin: const EdgeInsets.all(10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Row(children: <Widget>[
-                                Icon(
-                                  color: is8Char(userDetail.password)
-                                      ? Colors.green[400]
-                                      : Colors.grey[600],
-                                  Icons.circle,
-                                  size: 11,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                    style: TextStyle(
-                                        color: Colors.grey[600], fontSize: 11),
-                                    "Minimem 8 charachters")
-                              ]),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Row(children: <Widget>[
-                                Icon(
-                                  color: containsNumb(userDetail.password)
-                                      ? Colors.green[400]
-                                      : Colors.grey[600],
-                                  Icons.circle,
-                                  size: 11,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                    style: TextStyle(
-                                        color: Colors.grey[600], fontSize: 11),
-                                    "Numbers[0-9]")
-                              ]),
-                            ],
-                          ),
-                        ),
-                      if (userDetail.password.isNotEmpty)
-                        Container(
-                          width: 340,
-                          margin: const EdgeInsets.all(10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Row(children: <Widget>[
-                                Icon(
-                                  color: containsLowerCase(userDetail.password)
-                                      ? Colors.green[400]
-                                      : Colors.grey[600],
-                                  Icons.circle,
-                                  size: 11,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                    style: TextStyle(
-                                        color: Colors.grey[600], fontSize: 11),
-                                    "LowerCase Letters[a-z]")
-                              ]),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Row(children: <Widget>[
-                                Icon(
-                                  color: containsUpperCase(userDetail.password)
-                                      ? Colors.green[400]
-                                      : Colors.grey[600],
-                                  Icons.circle,
-                                  size: 11,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                    style: TextStyle(
-                                        color: Colors.grey[600], fontSize: 11),
-                                    "UpperCase Letters[A-Z]")
-                              ]),
-                            ],
-                          ),
-                        ),
-                      if (userDetail.password.isNotEmpty)
-                        Container(
-                          width: 340,
-                          margin: const EdgeInsets.all(10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Row(children: <Widget>[
-                                Icon(
-                                  color: containsSymbols(userDetail.password)
-                                      ? Colors.green[400]
-                                      : Colors.grey[600],
-                                  Icons.circle,
-                                  size: 11,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                    style: TextStyle(
-                                        color: Colors.grey[600], fontSize: 11),
-                                    "Symbols")
-                              ]),
-                            ],
-                          ),
-                        ),
-                      TextFiledCustom(
-                          updateCallback: ((value) {
-                            if (userDetail.password != value) {}
-                            toBeconfirmed = value;
-                          }),
-                          preIcon: Icons.person,
-                          hintText: "Confirm Password",
-                          isPassword: true,
-                          isZipCode: false,
-                          isEmail: false,
-                          isNumber: false,
-                          password: confirmedPassword,
-                          isUpdated: updated),
                     ],
                   ),
                 ),
@@ -527,31 +362,24 @@ class _CreateAccountState extends State<CreateAccount> {
                     margin: const EdgeInsets.all(10),
                     child: TextButton(
                       onPressed: () async {
-                        if (toBeconfirmed != confirmedPassword) {
-                          showPurchaseDialog(context, "Error Occured",
-                              "Invalid confirmation password",
-                              isApiCall: false);
+                        Message message =
+                            signUpFormValidation1(userDetail, isAgreed);
+                        if (message.success) {
+                          Get.toNamed("CreateAccount2", arguments: userDetail);
                         } else {
-                          Message message =
-                              signUpFormValidation1(userDetail, isAgreed);
-                          if (message.success) {
-                            Get.toNamed("CreateAccount2",
-                                arguments: userDetail);
-                          } else {
-                            setState(() {
-                              errorForm = message.formIndex;
-                            });
+                          setState(() {
+                            errorForm = message.formIndex;
+                          });
 
-                            DialogBox(context, "Error Occured", message.message,
-                                "Cancel", "Ok", (() {
-                              Get.back();
-                            }), (() {
-                              Get.back();
-                            }));
-                            // showPurchaseDialog(
-                            //     context, "Error Occured", message.message,
-                            //     isApiCall: false);
-                          }
+                          DialogBox(context, "Error Occured", message.message,
+                              "Cancel", "Ok", (() {
+                            Get.back();
+                          }), (() {
+                            Get.back();
+                          }));
+                          // showPurchaseDialog(
+                          //     context, "Error Occured", message.message,
+                          //     isApiCall: false);
                         }
                       },
                       child: const Text(
