@@ -8,9 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:panda_technician/components/globalComponents/TextFiledCustom.dart';
-import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
 import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
+import 'package:panda_technician/core/constants/theme/app_color.dart';
 import 'package:panda_technician/models/messages/message.dart';
 import 'package:panda_technician/models/auth/signUp.dart';
 import 'package:panda_technician/services/AWSClient.dart';
@@ -113,26 +113,16 @@ class _CreateAccountState extends State<CreateAccount> {
 
                                 getImage("CAMERA");
                               },
-                              child: uriPath == ""
-                                  ? CircleAvatar(
-                                      radius: 80,
-                                      backgroundColor: Colors.grey.shade400,
-                                      backgroundImage:
-                                          const AssetImage("assets/avater.png"))
-                                  : Container(
-                                      alignment: Alignment.center,
-                                      height: 100,
-                                      width: 100,
-                                      clipBehavior: Clip.hardEdge,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.grey, width: 1),
-                                          shape: BoxShape.circle,
-                                          color: Colors.transparent),
-                                      child: Image.file(File(uriPath),
-                                          fit: BoxFit.fill,
-                                          alignment: Alignment.center),
-                                    ))),
+                              child: CircleAvatar(
+                                maxRadius: 80.0,
+                                backgroundColor: Colors.grey.shade400,
+                                backgroundImage:
+                                    const AssetImage("assets/avater.png"),
+                                foregroundImage: uriPath != ""
+                                    ? FileImage(File(uriPath))
+                                    : AssetImage("assets/avater.png")
+                                        as ImageProvider,
+                              ))),
                       Positioned(
                           top: 75,
                           left: MediaQuery.of(context).size.width * 0.45,
@@ -267,7 +257,7 @@ class _CreateAccountState extends State<CreateAccount> {
                             },
                             child: Icon(
                               Icons.camera_alt,
-                              color: Colors.grey.shade500,
+                              color: AppColors.primary,
                               size: 45,
                             ),
                           ))
@@ -276,7 +266,6 @@ class _CreateAccountState extends State<CreateAccount> {
                 ),
                 Container(
                   alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.70,
                   width: MediaQuery.of(context).size.width * 0.9,
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   decoration: BoxDecoration(
@@ -358,7 +347,7 @@ class _CreateAccountState extends State<CreateAccount> {
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: const Color.fromRGBO(51, 188, 132, 1)),
+                        color: AppColors.primary),
                     margin: const EdgeInsets.all(10),
                     child: TextButton(
                       onPressed: () async {
@@ -383,7 +372,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         }
                       },
                       child: const Text(
-                        'Create Account',
+                        'Next',
                         style: TextStyle(fontSize: 14, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),

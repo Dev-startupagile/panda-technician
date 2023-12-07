@@ -678,18 +678,18 @@ class ApiHandler {
       bool signIn, AvaliableSocialLogin socialLogin) async {
     DialogHelper.showGetXLoading();
 
-    AuthProvider authProvider = socialLogin == AvaliableSocialLogin.google
-        ? AuthProvider.google
-        : socialLogin == AvaliableSocialLogin.facebook
-            ? AuthProvider.facebook
-            : AuthProvider.apple;
-    print("Signed in with $socialLogin");
-    SignInResult res =
-        await Amplify.Auth.signInWithWebUI(provider: authProvider);
-    print("Sign in result ${res.isSignedIn}");
-    DialogHelper.hideGetXLoading();
-    if (res.isSignedIn) {
-      try {
+    try {
+      AuthProvider authProvider = socialLogin == AvaliableSocialLogin.google
+          ? AuthProvider.google
+          : socialLogin == AvaliableSocialLogin.facebook
+              ? AuthProvider.facebook
+              : AuthProvider.apple;
+      print("Signed in with $socialLogin");
+      SignInResult res =
+          await Amplify.Auth.signInWithWebUI(provider: authProvider);
+      print("Sign in result ${res.isSignedIn}");
+      DialogHelper.hideGetXLoading();
+      if (res.isSignedIn) {
         List<AuthUserAttribute> listOfAttr =
             await Amplify.Auth.fetchUserAttributes();
         String email = listOfAttr
@@ -707,16 +707,21 @@ class ApiHandler {
         // ignore: use_build_context_synchronously
 
         if (signIn) {
-          return login(email, AppConstants.kDefaultPassword);
+          bool result = await login(email, AppConstants.kDefaultPassword);
+          if (!result) {
+            DialogHelper.showGetXErrorPopup("Login Error:",
+                "Please sign-up first or try to login via Email and Password");
+          }
         } else {
           Get.toNamed("CreateAccount",
               arguments: new SignUp(
                   email: email, password: AppConstants.kDefaultPassword));
           return true;
         }
-      } catch (e) {
-        print("Error getting user data: $e");
       }
+    } catch (e) {
+      print("Error getting user data: $e");
+      DialogHelper.hideGetXLoading();
     }
     return false;
   }
@@ -782,6 +787,7 @@ class ApiHandler {
     } catch (e) {
       print("Error: " + e.toString());
       print("Line: 928");
+      return false;
     }
   }
 

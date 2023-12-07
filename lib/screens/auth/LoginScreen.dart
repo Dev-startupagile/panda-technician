@@ -74,8 +74,8 @@ class _LoginState extends State<Login> {
                 TextFiledCustom(
                     updateCallback: setEmail,
                     preIcon: Icons.person,
-                    hintText: email,
-                    // hintText: "Email",
+                    // hintText: email,
+                    hintText: "Email",
                     isPassword: false,
                     isZipCode: false,
                     isEmail: true,

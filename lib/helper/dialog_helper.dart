@@ -123,6 +123,26 @@ class DialogHelper {
     );
   }
 
+  static void showGetXErrorPopup(String title, String msg) {
+    Get.dialog(
+        barrierDismissible: false,
+        AlertDialog(
+          title: Text(
+            title,
+          ),
+          content: Text(msg),
+          //buttons?
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Close"),
+              onPressed: () {
+                Get.back();
+              }, //closes popup
+            ),
+          ],
+        ));
+  }
+
   static void hideGetXLoading() {
     if (Get.isDialogOpen != null) {
       if (Get.isDialogOpen!) {

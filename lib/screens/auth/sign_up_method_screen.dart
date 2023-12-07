@@ -52,9 +52,9 @@ class _CreateAccountState extends State<SignUpMethodScreen> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                SizedBox(height: 50),
                 Container(
                   alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.70,
                   width: MediaQuery.of(context).size.width * 0.9,
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   decoration: BoxDecoration(
@@ -266,7 +266,7 @@ class _CreateAccountState extends State<SignUpMethodScreen> {
                         }
                       },
                       child: const Text(
-                        'Create Account',
+                        'Next',
                         style: TextStyle(fontSize: 14, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
