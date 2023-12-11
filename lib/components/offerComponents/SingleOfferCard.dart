@@ -70,7 +70,6 @@ class SingleOfferCard extends GetView<JobOfferController> {
                         )),
                     Container(
                         alignment: Alignment.centerLeft,
-                        width: MediaQuery.of(context).size.width * 0.25,
                         height: 50,
                         decoration: BoxDecoration(color: Colors.transparent),
                         child: Column(

@@ -62,7 +62,7 @@ class FCMService {
               _channel.name,
               color: Colors.green,
               playSound: true,
-              icon: '@mipmap/launch_image',
+              icon: '@mipmap/launcher_icon',
             ),
           ));
     }

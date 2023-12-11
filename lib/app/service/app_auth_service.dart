@@ -53,6 +53,9 @@ class AppAuthService extends GetxService {
 
   Future<void> logout() async {
     await _storageService.delete(StorageKeys.currentUserKey);
+    user = null;
+    authToken = null;
+    authStatus = AuthStatus.unauthenticated;
   }
 
   // Future<void> requestOTP(String email) async {

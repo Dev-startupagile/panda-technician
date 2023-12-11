@@ -37,6 +37,16 @@ class AutoServiceRepository {
     return _model;
   }
 
+  Future<List<ServiceRequestModel>> getMyPendingServiceRequests() async {
+    var response = await _apiService.authGet("/request/offers");
+
+    List<ServiceRequestModel> _model = List.from(response.data)
+        .map<ServiceRequestModel>((e) => ServiceRequestModel.fromMap(e['data']))
+        .toList();
+
+    return _model;
+  }
+
   Future<List<ServiceRequestModel>> getTechnicianRequests() async {
     var response = await _apiService.authGet("/request/technician");
 

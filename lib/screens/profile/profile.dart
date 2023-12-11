@@ -134,6 +134,7 @@ class _ProfileState extends State<Profile> {
                                     offset: Offset.fromDirection(2.7))
                               ]),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Container(
                                   alignment: Alignment.topLeft,
@@ -153,7 +154,6 @@ class _ProfileState extends State<Profile> {
                                   )),
                               Container(
                                 alignment: Alignment.topLeft,
-                                width: MediaQuery.of(context).size.width * 0.50,
                                 height: 70,
                                 margin: const EdgeInsets.fromLTRB(5, 20, 0, 0),
                                 decoration: const BoxDecoration(

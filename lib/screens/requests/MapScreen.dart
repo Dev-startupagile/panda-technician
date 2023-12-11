@@ -10,10 +10,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/app/modal/auto_service/service_request_model.dart';
 import 'package:panda_technician/app/modules/job_offer/job_offer.controller.dart';
+import 'package:panda_technician/app/service/app_auth_service.dart';
 import 'package:panda_technician/components/globalComponents/Footer.dart';
 import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/components/offerComponents/SpecificSingleOfferCard.dart';
+import 'package:panda_technician/core/exceptions/app_exception_interface.dart';
+import 'package:panda_technician/core/exceptions/app_http_exceptions.dart';
+import 'package:panda_technician/helper/dialog_helper.dart';
 import 'package:panda_technician/models/profile.dart';
 import 'package:panda_technician/models/requests/canceld.dart';
 import 'package:panda_technician/routes/route.dart';
@@ -49,7 +53,7 @@ class _MapScreenState extends State<MapScreen> {
   List<Canceld> canceld = [];
   int count = 0;
   int specificNotificationBaj = 0;
-
+  AppAuthService _appAuthService = Get.find<AppAuthService>();
   List<TargetFocus> targets = [];
 
   LatLng myLocation = LatLng(343.43, 342.34);
@@ -61,7 +65,6 @@ class _MapScreenState extends State<MapScreen> {
   final GlobalKey requestButton = GlobalKey();
   final GlobalKey profileButton = GlobalKey();
   final GlobalKey myLocationButton = GlobalKey();
-  bool stateNow = false;
   bool bottomSheetShown = false;
   int oldRequestCount = 0;
 
@@ -70,6 +73,9 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+    //INFO: Start listening for job request
+    jobOfferController.listenForRequestUpdate();
+
     profileDetail =
         ProfileModel(createdAt: DateTime.now(), updatedAt: DateTime.now());
     jobOfferController.requestStreamController.stream.listen((event) {
@@ -83,14 +89,15 @@ class _MapScreenState extends State<MapScreen> {
     });
 
     getProfiles();
-    stateNow = false;
     getMyLocation();
 
     WidgetsBinding.instance.addObserver(LifecycleEventHandler(
         detachedCallBack: () => (() async {
-              await ApiHandler().changeStatus(0, 0, !stateNow, context,
-                  ((value) {
-                stateNow = value;
+              await ApiHandler().changeStatus(
+                  0,
+                  0,
+                  !Provider.of<StateProvider>(context, listen: true).active,
+                  context, ((value) {
                 Provider.of<StateProvider>(context, listen: false)
                     .changeTechnicianState(value);
               }));
@@ -265,11 +272,28 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void getProfiles() async {
-    profileDetail = (await ApiHandler().getProfile());
-
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
-          profileDetail = profileDetail;
-        }));
+    try {
+      profileDetail = (await ApiHandler().getProfile());
+      Provider.of<StateProvider>(context, listen: false)
+          .changeTechnicianState(profileDetail.isOnline);
+      Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
+            profileDetail = profileDetail;
+          }));
+    } on UnauthorizedException catch (_) {
+      DialogHelper.showErrorConfirmationDialog(
+          context, "Session Expired", "You will be logged out now.", () async {
+        _appAuthService.logout();
+        Get.offNamedUntil(loginPage, (route) => route.isFirst);
+      });
+    } on AppException catch (_) {
+      DialogHelper.showGetXErrorPopup(
+          "Something went wrong", "Something went wrong. please try again.");
+    } catch (_) {
+      DialogHelper.showGetXErrorPopup(
+        "Connectivity Issue",
+        "Network connectivity issue. please check your Internet connection.",
+      );
+    }
   }
 
   @override
@@ -338,14 +362,15 @@ class _MapScreenState extends State<MapScreen> {
                             child: GestureDetector(
                                 onTap: () async {
                                   Loading(context);
-
                                   handleLocationPermission(context);
-                                  stateNow = !stateNow;
+
                                   Position posi = await getLocation();
                                   await ApiHandler().changeStatus(
                                       posi.latitude,
                                       posi.longitude,
-                                      stateNow,
+                                      !Provider.of<StateProvider>(context,
+                                              listen: true)
+                                          .active,
                                       context, ((value) {
                                     Get.back();
                                     Provider.of<StateProvider>(context,
@@ -370,7 +395,11 @@ class _MapScreenState extends State<MapScreen> {
                               alignment: Alignment.center,
                               padding: const EdgeInsets.all(1),
                               decoration: BoxDecoration(
-                                color: stateNow ? Colors.green : Colors.grey,
+                                color: Provider.of<StateProvider>(context,
+                                            listen: true)
+                                        .active
+                                    ? Colors.green
+                                    : Colors.grey,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
@@ -471,8 +500,11 @@ class _MapScreenState extends State<MapScreen> {
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color:
-                                stateNow ? Colors.green[700] : Colors.red[700]),
+                            color: Provider.of<StateProvider>(context,
+                                        listen: true)
+                                    .active
+                                ? Colors.green[700]
+                                : Colors.red[700]),
                       )
                     ],
                   ),

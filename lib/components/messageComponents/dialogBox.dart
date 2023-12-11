@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
-void DialogBox(BuildContext context, String title, String message,String negativeButton, String positiveButton,
- Function negativeCallBack , Function positiveCallBack) {
-
+void DialogBox(
+    BuildContext context,
+    String title,
+    String message,
+    String negativeButton,
+    String positiveButton,
+    Function negativeCallBack,
+    Function positiveCallBack) {
   showDialog(
       context: context,
       barrierDismissible:
@@ -16,24 +21,18 @@ void DialogBox(BuildContext context, String title, String message,String negativ
           //buttons?
           actions: <Widget>[
             TextButton(
-              child:  Text(negativeButton),
+              child: Text(negativeButton),
               onPressed: () {
-              negativeCallBack();
-                
+                negativeCallBack();
               }, //closes popup
             ),
-              TextButton(
-              child:  Text(positiveButton),
+            TextButton(
+              child: Text(positiveButton),
               onPressed: () {
-              positiveCallBack();
-                
+                positiveCallBack();
               }, //closes popup
             )
           ],
         );
       });
-}
-
- bool test(){
-return true;
 }
