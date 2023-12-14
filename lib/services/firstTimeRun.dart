@@ -30,7 +30,7 @@ logout(context) async {
     prefs.remove("apiToken");
     await appAuthService.logout();
 // prefs.remove("tutorialSession");
-    Get.toNamed(loginPage);
+    Get.offAndToNamed(loginPage);
   }));
 }
 

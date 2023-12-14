@@ -152,34 +152,41 @@ class _ProfileState extends State<Profile> {
                                     foregroundImage:
                                         NetworkImage(profile.profilePicture),
                                   )),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                height: 70,
-                                margin: const EdgeInsets.fromLTRB(5, 20, 0, 0),
-                                decoration: const BoxDecoration(
-                                    color: Colors.transparent),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(profile.fullName,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black)),
-                                      Text(profile.id,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey[400]))
-                                    ]),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.topLeft,
+                                  height: 70,
+                                  margin:
+                                      const EdgeInsets.fromLTRB(5, 20, 0, 0),
+                                  decoration: const BoxDecoration(
+                                      color: Colors.transparent),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(profile.fullName,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black)),
+                                        Text(profile.id,
+                                            overflow: TextOverflow.fade,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey[400]))
+                                      ]),
+                                ),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  Get.toNamed(editProfile);
-                                },
-                                child: Text(
-                                  "Edit",
-                                  style: TextStyle(color: Colors.blue[300]),
+                              SizedBox(
+                                width: 80,
+                                child: TextButton(
+                                  onPressed: () {
+                                    Get.toNamed(editProfile);
+                                  },
+                                  child: Text(
+                                    "Edit",
+                                    style: TextStyle(color: Colors.blue[300]),
+                                  ),
                                 ),
                               )
                             ],
