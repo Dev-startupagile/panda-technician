@@ -7,7 +7,6 @@ import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
 import 'package:panda_technician/core/constants/theme/app_icons.dart';
 import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/screens/auth/social_login_widget.dart';
-import 'package:panda_technician/services/firstTimeRun.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -23,19 +22,11 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    // isAlready();
-    // email = "baslielselamu2018+tppp@gmail.com";
-    // password = "Ap2334@56";
+    email = "baslielselamu2018+tppp@gmail.com";
+    password = "LionKing!23";
   }
 
   ApiHandler _apiHandler = ApiHandler();
-  isAlready() {
-    bool lod = isAlreadyLoagedIn(context);
-    if (!lod) return;
-    setState(() {
-      loaded = true;
-    });
-  }
 
   setEmail(String value) {
     setState(() {

@@ -8,6 +8,7 @@ import 'package:panda_technician/models/DetailedOffer.dart';
 import 'package:panda_technician/models/offer.dart';
 import 'package:panda_technician/models/requests/detailedRequest.dart';
 import 'package:panda_technician/routes/route.dart';
+import 'package:panda_technician/util/format.dart';
 
 class CreateOffer extends StatefulWidget {
   CreateOffer({super.key});
@@ -332,6 +333,9 @@ class _CreateOfferState extends State<CreateOffer> {
                           ),
                           child: TextField(
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              DecimalTextInputFormatter(decimalRange: 2)
+                            ],
                             controller: taxController,
                             onChanged: (val) {
                               if (val.isNotEmpty) {

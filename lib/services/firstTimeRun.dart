@@ -1,6 +1,4 @@
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:panda_technician/app/modules/job_offer/job_offer.controller.dart';
 import 'package:panda_technician/app/service/app_auth_service.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/routes/route.dart';
@@ -20,18 +18,6 @@ checkFirstTimeLoad(context, Function checked) async {
   } else {
     checked();
   }
-}
-
-bool isAlreadyLoagedIn(context) {
-  final AppAuthService appAuthService = Get.find<AppAuthService>();
-
-  if (appAuthService.user != null) {
-    Get.find<JobOfferController>().listenForRequestUpdate();
-
-    Get.toNamed(homePage);
-    return false;
-  }
-  return true;
 }
 
 logout(context) async {

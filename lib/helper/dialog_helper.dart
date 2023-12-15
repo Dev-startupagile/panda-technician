@@ -185,6 +185,31 @@ class DialogHelper {
     );
   }
 
+  static void showErrorConfirmationDialog(
+      BuildContext context, String title, String msg, Function() callback) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context2) {
+        return AlertDialog(
+          icon: Icon(Icons.warning, color: Colors.red),
+          iconColor: Colors.red,
+          title: Text(title),
+          content: Text(msg),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                // Close the dialog first
+                Navigator.pop(context);
+                callback();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   static void showReviewPopup(BuildContext context, String name, String to,
       String? requestId, Function(ReviewModel) callback) {
     showDialog(

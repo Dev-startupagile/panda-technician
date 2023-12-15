@@ -15,6 +15,7 @@ import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/globalComponents/popUpMessage.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 import 'package:panda_technician/core/constants/constants.dart';
+import 'package:panda_technician/core/exceptions/app_http_exceptions.dart';
 import 'package:panda_technician/helper/dialog_helper.dart';
 import 'package:panda_technician/models/bankInfo.dart';
 import 'package:panda_technician/models/globalModels/schedule.dart';
@@ -159,8 +160,8 @@ class ApiHandler {
 
   Future<int> getOfferCount() async {
     try {
-      var url =
-          Uri.parse(_appSettingService.config.baseURL + "/request/offers");
+      var url = Uri.parse(
+          _appSettingService.config.baseURL + "/request/offers/count");
       final prefs = await SharedPreferences.getInstance();
 
       var token = prefs.getString("apiToken");
@@ -175,7 +176,7 @@ class ApiHandler {
 
       // List<ServiceRequestModel> _model = ServiceRequestModelFromJson(json.encode(json.decode(response.body)["data"])) as List<ServiceRequestModel>;
 
-      return json.decode(response.body)["Count"];
+      return json.decode(response.body)['data'];
       // }
     } catch (e) {
       print("Error: " + e.toString());
@@ -214,29 +215,27 @@ class ApiHandler {
   }
 
   Future<ProfileModel> getProfile() async {
-    try {
-      var url = Uri.parse(_appSettingService.config.baseURL + "/auth/profile");
-      final prefs = await SharedPreferences.getInstance();
+    var url = Uri.parse(_appSettingService.config.baseURL + "/auth/profile");
+    final prefs = await SharedPreferences.getInstance();
 
-      var token = prefs.getString("apiToken");
+    var token = prefs.getString("apiToken");
 
-      var response = await http.get(
-        url,
-        headers: <String, String>{
-          'Authorization': 'Bearer $token',
-        },
-      );
+    var response = await http.get(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 401)
+      throw UnauthorizedException("Unable to get profile.");
+    if (response.statusCode != 200)
+      throw AppFuncException("Unable to get profile.");
 
-      print("ABCD: " + response.body);
-      ProfileModel _model = profileModelFromJson(json
-          .encode(json.decode(response.body)["data"]["personalInformation"]));
+    print("ABCD: " + response.body);
+    ProfileModel _model = profileModelFromJson(
+        json.encode(json.decode(response.body)["data"]["personalInformation"]));
 
-      return _model;
-    } catch (e) {
-      print("Error: " + e.toString());
-      print("Line: 304");
-    }
-    return ProfileModel(createdAt: DateTime.now(), updatedAt: DateTime.now());
+    return _model;
   }
 
   deleteAccount(String email, context) async {
@@ -708,6 +707,7 @@ class ApiHandler {
 
         if (signIn) {
           bool result = await login(email, AppConstants.kDefaultPassword);
+
           if (!result) {
             DialogHelper.showGetXErrorPopup("Login Error:",
                 "Please sign-up first or try to login via Email and Password");
@@ -749,8 +749,7 @@ class ApiHandler {
         var data = json.decode(response.body);
         prefs.setString("apiToken", data["token"]);
         _appAuthService.signin(data["data"], data["token"]);
-        //INFO: Start listening for job request
-        _jobOfferController.listenForRequestUpdate();
+
         return true;
       } else {
         return false;

@@ -112,7 +112,7 @@ class JobOfferController extends BaseController {
 
   Future<List<ServiceRequestModel>> getRequests() async {
     try {
-      return await _repository.getAllServiceRequests();
+      return await _repository.getMyPendingServiceRequests();
     } catch (e) {
       handleError(e);
     }

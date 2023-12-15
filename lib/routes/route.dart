@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:panda_technician/routes/middleware/authentication_middleware.dart';
 
 import 'package:panda_technician/screens/auth/LoginScreen.dart';
 import 'package:panda_technician/screens/auth/creatAccount2.dart';
@@ -71,7 +72,10 @@ const String technicianTransactionPage = "/technicianTransactionPage";
 const String signUpMethodScreen = "/signUpMethodScreen";
 
 List<GetPage> getPages = [
-  GetPage(name: initPage, page: () => const OnboardingSlider()),
+  GetPage(
+      name: initPage,
+      page: () => const OnboardingSlider(),
+      middlewares: [AuthMiddleware()]),
   GetPage(name: loginPage, page: () => const Login()),
   GetPage(name: homePage, page: () => const MapScreen()),
   GetPage(name: jobDetail, page: () => const AcceptJob()),
