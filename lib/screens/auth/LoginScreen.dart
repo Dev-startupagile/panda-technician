@@ -22,8 +22,8 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    email = "baslielselamu2018+tppp@gmail.com";
-    password = "LionKing!23";
+    // email = "baslielselamu2018+tppp@gmail.com";
+    // password = "LionKing!23";
   }
 
   ApiHandler _apiHandler = ApiHandler();
