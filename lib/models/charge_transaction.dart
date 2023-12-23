@@ -9,7 +9,7 @@ class ChargeTransaction {
   final int amountRefunded;
   final String application;
   final String applicationFee;
-  final int applicationFeeAmount;
+  final double applicationFeeAmount;
   final String balanceTransaction;
   final String currency;
   final String receiptUrl;
@@ -65,7 +65,7 @@ class ChargeTransaction {
       amountRefunded: map['amount_refunded']?.toInt() ?? 0,
       application: map['application'] ?? '',
       applicationFee: map['application_fee'] ?? '',
-      applicationFeeAmount: map['application_fee_amount'] ?? 0,
+      applicationFeeAmount: (map['application_fee_amount']) / 100 ?? 0,
       balanceTransaction: map['balance_transaction'] ?? '',
       currency: map['currency'] ?? '',
       receiptUrl: map['receipt_url'] ?? '',

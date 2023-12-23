@@ -18,7 +18,6 @@ class CreateOffer extends StatefulWidget {
 }
 
 class _CreateOfferState extends State<CreateOffer> {
-  int _offerCount = 3;
   int offe = 1;
   Offer offerList = Offer(items: []);
   TextEditingController taxController = TextEditingController();
@@ -31,7 +30,6 @@ class _CreateOfferState extends State<CreateOffer> {
     arguments = Get.arguments;
     // Future(_showJobList(context));
     // Use either of them.
-    _offerCount = 13;
     offe = 1;
     //  offerList = Offer(items: []);
     offerList.title = arguments.request.description.title;
@@ -322,9 +320,7 @@ class _CreateOfferState extends State<CreateOffer> {
                             color: Colors.white,
                             boxShadow: [
                               BoxShadow(
-                                color: true
-                                    ? Colors.grey.withOpacity(0.2)
-                                    : Colors.red,
+                                color: Colors.grey.withOpacity(0.2),
                                 spreadRadius: 1,
                                 blurRadius: 2,
                                 offset: const Offset(0, 3),
@@ -339,11 +335,10 @@ class _CreateOfferState extends State<CreateOffer> {
                             controller: taxController,
                             onChanged: (val) {
                               if (val.isNotEmpty) {
-                                if (int.parse(val) >= 100) {
+                                offerList.vat = double.parse(val);
+                                if (offerList.vat > 100) {
                                   taxController.text = "100";
-                                  offerList.vat = double.parse("100");
-                                } else {
-                                  offerList.vat = double.parse(val);
+                                  offerList.vat = 100;
                                 }
                               }
                             },

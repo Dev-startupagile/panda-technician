@@ -16,6 +16,7 @@ import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/screens/profile/stripeWebview.dart';
 import 'package:panda_technician/services/firstTimeRun.dart';
 import 'package:panda_technician/store/profileProvider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../components/globalComponents/Footer.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -286,14 +287,18 @@ class _ProfileState extends State<Profile> {
                       SingleTag(
                           ico: Icons.pause_presentation_rounded,
                           title: "Terms of Service",
-                          callBackHandler: (() {
-                            Get.toNamed(termsAndService);
+                          callBackHandler: (() async {
+                            // Get.toNamed(termsAndService);
+                            await launchUrl(
+                                Uri.parse("https://www.panda-mars.com/terms"));
                           })),
                       SingleTag(
                           ico: Icons.privacy_tip,
                           title: "Privacy Policy",
-                          callBackHandler: (() {
-                            Get.toNamed(privacyPolicy);
+                          callBackHandler: (() async {
+                            // Get.toNamed(privacyPolicy);
+                            await launchUrl(Uri.parse(
+                                "https://www.panda-mars.com/privacy"));
                           })),
                       SingleTag(
                           ico: Icons.help,
