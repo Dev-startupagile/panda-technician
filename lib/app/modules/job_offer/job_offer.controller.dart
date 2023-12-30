@@ -58,7 +58,7 @@ class JobOfferController extends BaseController {
             SubscriptionRequestEvent.fromMap(rawData["onUpdateServiceRequest"]);
         if (data.requestStatus != 'PENDING') return;
         var detailedRequest = await _repository.getServiceRequestById(data.id);
-
+        serviceRequests.clear();
         serviceRequests.add(detailedRequest);
 
         print("serviceRequests ${serviceRequests.length} $serviceRequests");

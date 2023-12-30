@@ -298,24 +298,25 @@ class _CreateAccountState extends State<SignUpMethodScreen> {
                           fillColor: Colors.white,
                           icon: AppIcons.googleIcon,
                           textColor: const Color.fromRGBO(0, 0, 0, 1),
-                          isSignIn: true,
+                          isSignIn: false,
                           onTap: () => _apiHandler.signInWithSocial(
-                              true, AvaliableSocialLogin.google),
+                              false, AvaliableSocialLogin.google),
                           name: "Google"),
                       SocialLoginBtn(
                           fillColor: Colors.white,
                           icon: AppIcons.appleIcon,
                           textColor: Colors.black,
-                          isSignIn: true,
-                          onTap: () => {},
+                          isSignIn: false,
+                          onTap: () => _apiHandler.signInWithSocial(
+                              false, AvaliableSocialLogin.apple),
                           name: "Apple"),
                       SocialLoginBtn(
                           fillColor: const Color(0xff1877f2),
                           icon: AppIcons.facebookIcon,
                           textColor: Colors.white,
-                          isSignIn: true,
+                          isSignIn: false,
                           onTap: () => _apiHandler.signInWithSocial(
-                              true, AvaliableSocialLogin.facebook),
+                              false, AvaliableSocialLogin.facebook),
                           name: "Facebook"),
                     ],
                   ),

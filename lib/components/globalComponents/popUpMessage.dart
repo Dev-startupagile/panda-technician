@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:panda_technician/routes/route.dart';
 
 void showPurchaseDialog(BuildContext context, String title, String message,
     {bool isApiCall: true, bool isOtp: false, isVerify: false}) {
@@ -23,18 +24,13 @@ void showPurchaseDialog(BuildContext context, String title, String message,
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                   FocusScope.of(context).unfocus();
-                  if (isOtp) {
-                    Get.toNamed("SingUp");
-                  }
+
                   if (isVerify) {
                     Get.toNamed("Verification");
                   }
                 } else {
                   Navigator.of(context).pop();
                   FocusScope.of(context).unfocus();
-                  if (isOtp) {
-                    Get.toNamed("SingUp");
-                  }
                 }
               }, //closes popup
             ),

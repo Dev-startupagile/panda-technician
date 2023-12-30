@@ -16,6 +16,7 @@ import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/screens/profile/stripeWebview.dart';
 import 'package:panda_technician/services/firstTimeRun.dart';
 import 'package:panda_technician/store/profileProvider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../components/globalComponents/Footer.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -152,34 +153,41 @@ class _ProfileState extends State<Profile> {
                                     foregroundImage:
                                         NetworkImage(profile.profilePicture),
                                   )),
-                              Container(
-                                alignment: Alignment.topLeft,
-                                height: 70,
-                                margin: const EdgeInsets.fromLTRB(5, 20, 0, 0),
-                                decoration: const BoxDecoration(
-                                    color: Colors.transparent),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(profile.fullName,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black)),
-                                      Text(profile.id,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey[400]))
-                                    ]),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.topLeft,
+                                  height: 70,
+                                  margin:
+                                      const EdgeInsets.fromLTRB(5, 20, 0, 0),
+                                  decoration: const BoxDecoration(
+                                      color: Colors.transparent),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(profile.fullName,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black)),
+                                        Text(profile.id,
+                                            overflow: TextOverflow.fade,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey[400]))
+                                      ]),
+                                ),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  Get.toNamed(editProfile);
-                                },
-                                child: Text(
-                                  "Edit",
-                                  style: TextStyle(color: Colors.blue[300]),
+                              SizedBox(
+                                width: 80,
+                                child: TextButton(
+                                  onPressed: () {
+                                    Get.toNamed(editProfile);
+                                  },
+                                  child: Text(
+                                    "Edit",
+                                    style: TextStyle(color: Colors.blue[300]),
+                                  ),
                                 ),
                               )
                             ],
@@ -279,14 +287,18 @@ class _ProfileState extends State<Profile> {
                       SingleTag(
                           ico: Icons.pause_presentation_rounded,
                           title: "Terms of Service",
-                          callBackHandler: (() {
-                            Get.toNamed(termsAndService);
+                          callBackHandler: (() async {
+                            // Get.toNamed(termsAndService);
+                            await launchUrl(
+                                Uri.parse("https://www.panda-mars.com/terms"));
                           })),
                       SingleTag(
                           ico: Icons.privacy_tip,
                           title: "Privacy Policy",
-                          callBackHandler: (() {
-                            Get.toNamed(privacyPolicy);
+                          callBackHandler: (() async {
+                            // Get.toNamed(privacyPolicy);
+                            await launchUrl(Uri.parse(
+                                "https://www.panda-mars.com/privacy"));
                           })),
                       SingleTag(
                           ico: Icons.help,

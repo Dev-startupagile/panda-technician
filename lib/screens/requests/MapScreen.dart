@@ -1,6 +1,8 @@
 // ignore_for_file: sort_child_properties_last, depend_on_referenced_packages
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +13,8 @@ import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/app/modal/auto_service/service_request_model.dart';
 import 'package:panda_technician/app/modules/job_offer/job_offer.controller.dart';
 import 'package:panda_technician/app/service/app_auth_service.dart';
+import 'package:panda_technician/app/service/app_setting_service.dart';
+import 'package:panda_technician/app/service/stripe_service.dart';
 import 'package:panda_technician/components/globalComponents/Footer.dart';
 import 'package:panda_technician/components/loading.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
@@ -21,6 +25,7 @@ import 'package:panda_technician/helper/dialog_helper.dart';
 import 'package:panda_technician/models/profile.dart';
 import 'package:panda_technician/models/requests/canceld.dart';
 import 'package:panda_technician/routes/route.dart';
+import 'package:panda_technician/screens/profile/stripeWebview.dart';
 import 'package:panda_technician/services/appStateService.dart';
 import 'package:panda_technician/services/serviceDate.dart';
 import 'package:panda_technician/services/serviceLocation.dart';
@@ -29,6 +34,7 @@ import 'package:panda_technician/store/StateProvider.dart';
 import 'package:panda_technician/store/profileProvider.dart';
 import 'googleMap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
@@ -58,6 +64,8 @@ class _MapScreenState extends State<MapScreen> {
 
   LatLng myLocation = LatLng(343.43, 342.34);
 
+  AppSettingService _appSettingService = Get.find<AppSettingService>();
+
   final GlobalKey toggle = GlobalKey();
   final GlobalKey homeButton = GlobalKey();
   final GlobalKey offerButton = GlobalKey();
@@ -65,10 +73,57 @@ class _MapScreenState extends State<MapScreen> {
   final GlobalKey requestButton = GlobalKey();
   final GlobalKey profileButton = GlobalKey();
   final GlobalKey myLocationButton = GlobalKey();
+
+  final StripeService _stripeService = StripeService();
   bool bottomSheetShown = false;
   int oldRequestCount = 0;
 
   final JobOfferController jobOfferController = Get.find<JobOfferController>();
+
+  void gotoSetupPaymentPage() async {
+    try {
+      // Get.toNamed("Payment");
+      final prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString("apiToken");
+      Loading(context);
+      var response = await http.get(
+        Uri.parse(
+            '${_appSettingService.config.baseURL}/account/connectAccountLink'),
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+      );
+
+      // setState(() {
+      //   strapiToken = json.decode(response.body)["url"] ?? "empty";
+      // });
+
+      var authUrl = json.decode(response.body)["url"] ?? "empty";
+
+      if (authUrl == "empty") {
+        Get.back();
+        DialogBox(context, "Message", "Already Connected", "Cancel", "Ok", (() {
+          Get.back();
+        }), (() {
+          Get.back();
+        }));
+      } else {
+        Get.back();
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => StripeWebView(
+                      stripeUrl: Uri.parse(authUrl),
+                    )));
+      }
+    } catch (e) {
+      DialogBox(context, "Message",
+          "Error Occured when trying to connect account!", "Cancel", "Ok", (() {
+        Get.back();
+      }), (() {
+        Get.back();
+      }));
+    }
+  }
 
   @override
   void initState() {
@@ -296,6 +351,12 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  Future<bool> isAccountNotConnected() async {
+    var response = await _stripeService.stripeRetrieveAccount();
+    return response["details_submitted"] == null ||
+        response["details_submitted"] == false;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (Provider.of<ProfileProvider>(context, listen: true).profile.id == "") {
@@ -361,16 +422,35 @@ class _MapScreenState extends State<MapScreen> {
                             left: 10,
                             child: GestureDetector(
                                 onTap: () async {
+                                  bool isOnline = Provider.of<StateProvider>(
+                                          context,
+                                          listen: false)
+                                      .active;
                                   Loading(context);
+
                                   handleLocationPermission(context);
 
                                   Position posi = await getLocation();
+
+                                  bool isAccountConnectedValue =
+                                      await isAccountNotConnected();
+                                  if (isAccountConnectedValue && !isOnline) {
+                                    Get.back();
+                                    Get.back();
+
+                                    DialogHelper.showGetXDialogBox(
+                                        "Account Setup Incomplete",
+                                        "You need to connect your bank account before going online. Please navigate to your profile page to then payment to link your account.",
+                                        "cancel",
+                                        "Okay",
+                                        () => Get.back(),
+                                        gotoSetupPaymentPage);
+                                    return;
+                                  }
                                   await ApiHandler().changeStatus(
                                       posi.latitude,
                                       posi.longitude,
-                                      !Provider.of<StateProvider>(context,
-                                              listen: true)
-                                          .active,
+                                      !isOnline,
                                       context, ((value) {
                                     Get.back();
                                     Provider.of<StateProvider>(context,

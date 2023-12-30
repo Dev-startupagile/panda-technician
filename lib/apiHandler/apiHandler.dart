@@ -945,7 +945,7 @@ class ApiHandler {
             prefs.setString("userId", json.decode(response.body)["userID"]);
             prefs.setString("userEmail", requestBody.email);
 
-            Get.offAndToNamed(signup);
+            Get.toNamed(signupVerification);
           } else {
             //todo: error message add here
           }

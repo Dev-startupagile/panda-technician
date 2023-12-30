@@ -61,7 +61,6 @@ class _CreateAccount2State extends State<CreateAccount2> {
           padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: Column(children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height * 0.78,
               width: MediaQuery.of(context).size.width * 0.9,
               margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               decoration: BoxDecoration(

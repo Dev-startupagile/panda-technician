@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:panda_technician/apiHandler/apiHandler.dart';
+import 'package:panda_technician/helper/dialog_helper.dart';
 import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/screens/requests/MapScreen.dart';
 import 'package:panda_technician/store/StateProvider.dart';
@@ -74,7 +75,7 @@ class _FooterState extends State<Footer> {
   @override
   void initState() {
     super.initState();
-    updateNotificationBaj();
+    updateNotificationBaj().then(showPendingRequestPopup);
     updateSpecificNotificationBaj();
 
     timer = Timer.periodic(
@@ -83,8 +84,23 @@ class _FooterState extends State<Footer> {
         Duration(seconds: 15), (Timer t) => updateSpecificNotificationBaj());
   }
 
-  updateNotificationBaj() async {
+  FutureOr<dynamic> showPendingRequestPopup(_) {
+    if (notificationBaj > 0) {
+      DialogHelper.showGetXDialogBox(
+          "Pending Service Request",
+          "There is pending service request in your offers page.",
+          "cancle",
+          "view", () {
+        Get.back();
+      }, () {
+        _navigateToScreen(1, context);
+      });
+    }
+  }
+
+  Future<void> updateNotificationBaj() async {
     notificationBaj = await ApiHandler().getOfferCount();
+
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
