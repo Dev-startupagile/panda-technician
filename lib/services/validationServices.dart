@@ -132,7 +132,7 @@ Message signUpFormValidation(
   return message;
 }
 
-Message signUpFormValidation1(SignUp userDetail, bool termsAndConditions) {
+Message signUpFormValidation1(SignUp userDetail, bool phoneAgreed) {
   // ignore: unused_local_variable
   bool isFormValid = true;
 
@@ -170,6 +170,15 @@ Message signUpFormValidation1(SignUp userDetail, bool termsAndConditions) {
     isFormValid = false;
     Message message = Message(
         success: false, message: "Phone Number  Not Added", formIndex: 3);
+
+    return message;
+  }
+  if (!phoneAgreed) {
+    isFormValid = false;
+    Message message = Message(
+        success: false,
+        message: "You must agree to recieve text messages.",
+        formIndex: 5);
 
     return message;
   }
