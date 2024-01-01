@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.6.6</string>
+	<string>1.6.8</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -40,6 +40,11 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string></string>
+    <key>CFBundleURLSchemes</key>
+          <array>
+              <string>myapp</string>
+          </array>
+
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>our app needs to access the location of your phone</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -76,5 +81,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 </dict>
 </plist>
