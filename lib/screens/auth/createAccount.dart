@@ -41,7 +41,7 @@ class _CreateAccountState extends State<CreateAccount> {
     updated = true;
   }
 
-  bool isAgreed = false;
+  bool phoneAgreed = false;
   PhoneNumber number = PhoneNumber(isoCode: 'US');
   String uriPath = "";
   // Pick an image
@@ -342,6 +342,38 @@ class _CreateAccountState extends State<CreateAccount> {
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            checkColor: Colors.white,
+                            value: phoneAgreed,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                phoneAgreed = !phoneAgreed;
+                              });
+                            },
+                          ),
+                          const Expanded(
+                            child: Text(
+                              "By checking this box you agree to receive text messages at the number provided.",
+                              style: TextStyle(fontSize: 14),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ])),
                 Container(
                     width: 340, //
                     height: 50,
@@ -352,7 +384,7 @@ class _CreateAccountState extends State<CreateAccount> {
                     child: TextButton(
                       onPressed: () async {
                         Message message =
-                            signUpFormValidation1(userDetail, isAgreed);
+                            signUpFormValidation1(userDetail, phoneAgreed);
                         if (message.success) {
                           Get.toNamed("CreateAccount2", arguments: userDetail);
                         } else {
