@@ -102,7 +102,7 @@ class _CreateAccount2State extends State<CreateAccount2> {
                         decoration: const InputDecoration(
                           counterText: '',
                           border: InputBorder.none,
-                          hintText: "Street",
+                          hintText: "Street (Optional)",
                           prefixIcon: Icon(Icons.location_city),
                         ),
                       )),
@@ -168,13 +168,15 @@ class _CreateAccount2State extends State<CreateAccount2> {
                       child: TextField(
                         enabled: true,
                         controller: cityController,
-                        onChanged: (value) async {},
+                        onChanged: (value) async {
+                          arguments.city = value;
+                        },
                         style: const TextStyle(fontSize: 16),
                         cursorWidth: 1,
                         decoration: const InputDecoration(
                           counterText: '',
                           border: InputBorder.none,
-                          hintText: "City",
+                          hintText: "City (Optional)",
                           prefixIcon: Icon(Icons.location_city),
                         ),
                       )),
@@ -198,13 +200,15 @@ class _CreateAccount2State extends State<CreateAccount2> {
                       child: TextField(
                         enabled: true,
                         controller: stateController,
-                        onChanged: (value) async {},
+                        onChanged: (value) async {
+                          arguments.state = value;
+                        },
                         style: const TextStyle(fontSize: 16),
                         cursorWidth: 1,
                         decoration: const InputDecoration(
                           counterText: '',
                           border: InputBorder.none,
-                          hintText: "State",
+                          hintText: "State (Optional)",
                           prefixIcon: Icon(Icons.location_city),
                         ),
                       )),
@@ -214,16 +218,16 @@ class _CreateAccount2State extends State<CreateAccount2> {
                       arguments.zipCode = int.parse(value);
                     }),
                     preIcon: Icons.code,
-                    hintText: "Zip Code",
+                    hintText: "Zip Code (optional)",
                     isPassword: false,
                     isZipCode: true,
                     isEmail: false,
                     isNumber: true,
-                    isError: arguments.zipCode.toString().length != 5
-                        ? (errorForm == 404)
-                            ? true
-                            : errorForm == 4
-                        : false,
+                    // isError: arguments.zipCode.toString().length != 5
+                    //     ? (errorForm == 404)
+                    //         ? true
+                    //         : errorForm == 4
+                    //     : false,
                   ),
                   Container(
                     alignment: Alignment.bottomLeft,

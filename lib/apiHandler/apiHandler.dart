@@ -713,9 +713,40 @@ class ApiHandler {
                 "Please sign-up first or try to login via Email and Password");
           }
         } else {
+          String? email;
+          String? name;
+          if (listOfAttr
+              .where((element) => element.userAttributeKey.key == "email")
+              .isNotEmpty) {
+            email = listOfAttr
+                .firstWhere(
+                    (element) => element.userAttributeKey.key == "email")
+                .value;
+          }
+          if (listOfAttr
+              .where((element) => element.userAttributeKey.key == "name")
+              .isNotEmpty) {
+            name = listOfAttr
+                .firstWhere((element) => element.userAttributeKey.key == "name")
+                .value;
+          }
+          String? firstName, lastName;
+          if (socialLogin == AvaliableSocialLogin.google ||
+              socialLogin == AvaliableSocialLogin.apple) {
+            if (name != null && name.contains(" ")) {
+              var bothName = name.split(" ");
+              firstName = bothName[0];
+              lastName = bothName[1];
+            } else {
+              firstName = name ?? '';
+            }
+          }
           Get.toNamed("CreateAccount",
               arguments: new SignUp(
-                  email: email, password: AppConstants.kDefaultPassword));
+                  email: email!,
+                  password: AppConstants.kDefaultPassword,
+                  firstName: firstName ?? '',
+                  lastName: lastName ?? ''));
           return true;
         }
       }

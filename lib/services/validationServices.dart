@@ -43,7 +43,7 @@ Message signUpFormValidation(
     return message;
   }
 
-  if (zipCode.length != 5) {
+  if (zipCode.isNotEmpty && zipCode.length != 5) {
     isFormValid = false;
     print("ZZZZZZZZZZZZZ: " + zipCode);
     Message message =
@@ -60,7 +60,7 @@ Message signUpFormValidation(
     return message;
   }
 
-  if (userDetail.city == "") {
+  if (userDetail.city == null) {
     isFormValid = false;
     Message message =
         Message(success: false, message: "City Not Added", formIndex: 2);
@@ -86,7 +86,7 @@ Message signUpFormValidation(
 
     return message;
   }
-  if (userDetail.state == "") {
+  if (userDetail.state == null) {
     isFormValid = false;
     Message message =
         Message(success: false, message: "State Not Added", formIndex: 3);
@@ -94,7 +94,7 @@ Message signUpFormValidation(
     return message;
   }
 
-  if (userDetail.street == "") {
+  if (userDetail.street == null) {
     isFormValid = false;
     Message message =
         Message(success: false, message: "Street Not Added", formIndex: 1);
