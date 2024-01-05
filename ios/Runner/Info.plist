@@ -39,22 +39,19 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string></string>
-    <key>CFBundleURLSchemes</key>
-          <array>
-              <string>myapp</string>
-          </array>
-
+	<string>Our app needs to access your Photo Library to set your profile Picture inside our app.</string>
+	<key>CFBundleURLSchemes</key>
+	<array>
+		<string>myapp</string>
+	</array>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>our app needs to access the location of your phone</string>
+	<string>Our app needs to access your location to Find Nearby Technicians Around You</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is required for xyz benefits for you</string>
+	<string>Our app needs to access your location to Find Nearby Technicians Around You</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is required for xyz benefits for you</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
+	<string>Our app needs to access your location to Find Nearby Technicians Around You</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Our app needs to access the photos from your phone to be accessed properly</string>
+	<string>Our app needs to access your Photo Library to set your profile Picture inside our app.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

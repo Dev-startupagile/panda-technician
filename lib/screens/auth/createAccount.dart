@@ -280,7 +280,9 @@ class _CreateAccountState extends State<CreateAccount> {
                           userDetail.firstName = value;
                         }),
                         preIcon: Icons.person,
-                        hintText: "First Name",
+                        hintText: userDetail.firstName.isEmpty
+                            ? "First Name"
+                            : userDetail.firstName,
                         isPassword: false,
                         isZipCode: false,
                         isEmail: false,
@@ -292,7 +294,9 @@ class _CreateAccountState extends State<CreateAccount> {
                           userDetail.lastName = value;
                         }),
                         preIcon: Icons.person,
-                        hintText: "Last Name",
+                        hintText: userDetail.firstName.isEmpty
+                            ? "Last Name"
+                            : userDetail.firstName,
                         isPassword: false,
                         isZipCode: false,
                         isEmail: false,
