@@ -711,6 +711,9 @@ class ApiHandler {
           if (!result) {
             DialogHelper.showGetXErrorPopup("Login Error:",
                 "Please sign-up first or try to login via Email and Password");
+          } else {
+            // ignore: use_build_context_synchronously
+            Get.offAndToNamed(homePage);
           }
         } else {
           String? email;
@@ -743,6 +746,7 @@ class ApiHandler {
           }
           Get.toNamed("CreateAccount",
               arguments: new SignUp(
+                  method: socialLogin.name,
                   email: email!,
                   password: AppConstants.kDefaultPassword,
                   firstName: firstName ?? '',
@@ -958,7 +962,6 @@ class ApiHandler {
         requestBody.phoneNumber = requestBody.phoneNumber;
         print("AKA :" + requestBody.phoneNumber);
         print("BODY: " + json.encode(requestBody));
-
         var url = Uri.parse(_appSettingService.config.baseURL + "/auth/signup");
         var response = await http.post(url,
             headers: <String, String>{'Content-Type': 'application/json'},
@@ -975,8 +978,11 @@ class ApiHandler {
 // prefs.setString("apiToken", json.decode(response.body)["token"]);
             prefs.setString("userId", json.decode(response.body)["userID"]);
             prefs.setString("userEmail", requestBody.email);
-
-            Get.toNamed(signupVerification);
+            if (requestBody.method == 'email') {
+              Get.toNamed(signupVerification);
+            } else {
+              Get.offAndToNamed(loginPage);
+            }
           } else {
             //todo: error message add here
           }

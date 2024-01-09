@@ -374,8 +374,13 @@ class _SignUpVerificationState extends State<SignUpVerification>
 
                             if (response) {
                               showPurchaseDialog(
-                                  context, "Otp Sent", "Check Your SMS",
-                                  isOtp: true, isApiCall: false);
+                                  //TODO: change to SMS when phone is fixed
+                                  // context, "Otp Sent", "Check Your SMS",
+                                  context,
+                                  "Otp Sent",
+                                  "Check Your Email",
+                                  isOtp: true,
+                                  isApiCall: false);
                             } else {
                               showPurchaseDialog(context, "Error Occured",
                                   "Wait for the count down to finsh");

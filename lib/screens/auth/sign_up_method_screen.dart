@@ -247,7 +247,8 @@ class _CreateAccountState extends State<SignUpMethodScreen> {
                         } else {
                           Message message = signUpFormValidation0(userDetail);
                           if (message.success) {
-                            Get.toNamed("CreateAccount", arguments: userDetail);
+                            Get.toNamed("CreateAccount",
+                                arguments: userDetail..method = 'email');
                           } else {
                             setState(() {
                               errorForm = message.formIndex;
