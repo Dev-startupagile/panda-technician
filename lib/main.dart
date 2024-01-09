@@ -11,12 +11,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app/service/init_app_service.dart';
 
-main() async {
+Future<void> main() async {
   await dotenv.load(fileName: ".env");
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   await initAppService();
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
