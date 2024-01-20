@@ -436,7 +436,7 @@ class _MapScreenState extends State<MapScreen> {
                                       await isAccountNotConnected();
                                   if (isAccountConnectedValue && !isOnline) {
                                     Get.back();
-                                    Get.back();
+                                    // Get.back();
 
                                     DialogHelper.showGetXDialogBox(
                                         "Account Setup Incomplete",

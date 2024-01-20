@@ -260,6 +260,7 @@ class ApiHandler {
             (() async {
           final prefs = await SharedPreferences.getInstance();
           prefs.remove("apiToken");
+          prefs.clear();
           Get.toNamed(loginPage);
         }), (() async {
           final prefs = await SharedPreferences.getInstance();

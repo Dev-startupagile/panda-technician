@@ -4,6 +4,7 @@ import 'package:panda_technician/apiHandler/apiHandler.dart';
 import 'package:panda_technician/components/messageComponents/dialogBox.dart';
 
 import 'package:panda_technician/components/tags/singleTag.dart';
+import 'package:panda_technician/helper/dialog_helper.dart';
 import 'package:panda_technician/models/profile.dart';
 import 'package:panda_technician/routes/route.dart';
 import 'package:panda_technician/store/StateProvider.dart';
@@ -97,7 +98,9 @@ class _SettingsState extends State<Settings> {
                             "Yes", (() {
                           Get.back();
                         }), (() {
+                          DialogHelper.showGetXLoading();
                           ApiHandler().deleteAccount(profile.id, context);
+                          Get.back();
                         }));
                       },
                       child: const Text(
