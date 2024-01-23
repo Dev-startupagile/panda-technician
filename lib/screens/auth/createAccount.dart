@@ -294,9 +294,9 @@ class _CreateAccountState extends State<CreateAccount> {
                           userDetail.lastName = value;
                         }),
                         preIcon: Icons.person,
-                        hintText: userDetail.firstName.isEmpty
+                        hintText: userDetail.lastName.isEmpty
                             ? "Last Name"
-                            : userDetail.firstName,
+                            : userDetail.lastName,
                         isPassword: false,
                         isZipCode: false,
                         isEmail: false,
