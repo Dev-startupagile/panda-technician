@@ -56,7 +56,7 @@ class SpecificSingleOfferCard extends GetView<JobOfferController> {
                         child: Column(
                           children: <Widget>[
                             Text(
-                              "Mobile Technician",
+                              "Mobile Technician1",
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold),

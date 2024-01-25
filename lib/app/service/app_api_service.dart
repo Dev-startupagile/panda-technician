@@ -126,6 +126,7 @@ class AppApiService extends GetxService {
       {Map<String, dynamic>? data,
       Map<String, dynamic>? queryParameters,
       dio.Options? options}) async {
+    print(_appAuthService.authToken);
     return await get(path,
         data: data,
         // ignore: prefer_if_null_operators

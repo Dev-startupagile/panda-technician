@@ -291,6 +291,7 @@ class _MapScreenState extends State<MapScreen> {
     // canceld = (await ApiHandler().getCanceldRequest())!;
 
     showModalBottomSheet(
+        backgroundColor: Colors.red,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25),
         ),

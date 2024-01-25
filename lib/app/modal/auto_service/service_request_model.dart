@@ -91,8 +91,9 @@ class ServiceRequestModel {
       customerId: map['customerId'] ?? '',
       vehiclesDetail:
           (map['vehiclesDetail'] != null && !map['vehiclesDetail'].isEmpty)
-              ? List<VehiclesDetail>.from(
-                  map['vehiclesDetail']?.map((x) => VehiclesDetail.fromJson(x)))
+              ? List<VehiclesDetail>.from(map['vehiclesDetail']
+                  ?.where((x) => x != null)
+                  .map((x) => VehiclesDetail.fromJson(x)))
               : null,
       serviceDetail: ServiceDetail.fromJson(map['serviceDetail']),
       isScheduled: map['isScheduled'] ?? false,
