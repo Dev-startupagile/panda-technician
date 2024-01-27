@@ -387,6 +387,13 @@ class _CreateAccountState extends State<CreateAccount> {
                     margin: const EdgeInsets.all(10),
                     child: TextButton(
                       onPressed: () async {
+                        //placeholder avatar
+                        //TODO: REmove if profile pic is mandatory
+                        if (userDetail.profilePicture == "") {
+                          userDetail.profilePicture =
+                              "https://aletsys.com/panda-placeholder-avatar.png";
+                        }
+
                         Message message =
                             signUpFormValidation1(userDetail, phoneAgreed);
                         if (message.success) {
