@@ -126,6 +126,18 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Provider.of<ProfileProvider>(context, listen: false).profile.id ==
+          "") {
+        Provider.of<ProfileProvider>(context, listen: false)
+            .changeProfileProvider(profileDetail);
+      }
+    });
+  }
+
+  @override
   void initState() {
     super.initState();
     //INFO: Start listening for job request
@@ -353,18 +365,17 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<bool> isAccountNotConnected() async {
-    var response = await _stripeService.stripeRetrieveAccount();
-    return response["details_submitted"] == null ||
-        response["details_submitted"] == false;
+    try {
+      var response = await _stripeService.stripeRetrieveAccount();
+      return response["details_submitted"] == null ||
+          response["details_submitted"] == false;
+    } catch (e) {
+      return true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<ProfileProvider>(context, listen: true).profile.id == "") {
-      Provider.of<ProfileProvider>(context, listen: false)
-          .changeProfileProvider(profileDetail);
-    }
-
     return SafeArea(
         top: false,
         bottom: true,
