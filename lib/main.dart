@@ -28,7 +28,8 @@ Future<void> main() async {
 
 Future<void> startApp() async {
   try {
-    var x = 1 / 0;
+    var x = [1, 2];
+    print(x[3]);
   } catch (exception, stackTrace) {
     await Sentry.captureException(
       exception,
