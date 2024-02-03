@@ -17,7 +17,7 @@ void showTutorial(List<TargetFocus> targets,context) {
         
       },
       onSkip: (){
-      
+        return false;
       }
     )..show(context:context);
 
