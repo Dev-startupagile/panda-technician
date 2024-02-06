@@ -710,48 +710,17 @@ class ApiHandler {
           bool result = await login(email, AppConstants.kDefaultPassword);
 
           if (!result) {
-            DialogHelper.showGetXErrorPopup("Login Error:",
-                "Please sign-up first or try to login via Email and Password");
+            DialogHelper.showGetXErrorPopup("Login failed",
+                "Please sign-up first or try to login via Email and Password",
+                () {
+              signUpWithSocialConfirmation(listOfAttr, socialLogin);
+            });
           } else {
             // ignore: use_build_context_synchronously
             Get.offAndToNamed(homePage);
           }
         } else {
-          String? email;
-          String? name;
-          if (listOfAttr
-              .where((element) => element.userAttributeKey.key == "email")
-              .isNotEmpty) {
-            email = listOfAttr
-                .firstWhere(
-                    (element) => element.userAttributeKey.key == "email")
-                .value;
-          }
-          if (listOfAttr
-              .where((element) => element.userAttributeKey.key == "name")
-              .isNotEmpty) {
-            name = listOfAttr
-                .firstWhere((element) => element.userAttributeKey.key == "name")
-                .value;
-          }
-          String? firstName, lastName;
-          if (socialLogin == AvaliableSocialLogin.google ||
-              socialLogin == AvaliableSocialLogin.apple) {
-            if (name != null && name.contains(" ")) {
-              var bothName = name.split(" ");
-              firstName = bothName[0];
-              lastName = bothName[1];
-            } else {
-              firstName = name ?? '';
-            }
-          }
-          Get.toNamed("CreateAccount",
-              arguments: new SignUp(
-                  method: socialLogin.name,
-                  email: email!,
-                  password: AppConstants.kDefaultPassword,
-                  firstName: firstName ?? '',
-                  lastName: lastName ?? ''));
+          signUpWithSocialConfirmation(listOfAttr, socialLogin);
           return true;
         }
       }
@@ -760,6 +729,44 @@ class ApiHandler {
       DialogHelper.hideGetXLoading();
     }
     return false;
+  }
+
+  void signUpWithSocialConfirmation(
+      List<AuthUserAttribute> listOfAttr, AvaliableSocialLogin socialLogin) {
+    String? email;
+    String? name;
+    if (listOfAttr
+        .where((element) => element.userAttributeKey.key == "email")
+        .isNotEmpty) {
+      email = listOfAttr
+          .firstWhere((element) => element.userAttributeKey.key == "email")
+          .value;
+    }
+    if (listOfAttr
+        .where((element) => element.userAttributeKey.key == "name")
+        .isNotEmpty) {
+      name = listOfAttr
+          .firstWhere((element) => element.userAttributeKey.key == "name")
+          .value;
+    }
+    String? firstName, lastName;
+    if (socialLogin == AvaliableSocialLogin.google ||
+        socialLogin == AvaliableSocialLogin.apple) {
+      if (name != null && name.contains(" ")) {
+        var bothName = name.split(" ");
+        firstName = bothName[0];
+        lastName = bothName[1];
+      } else {
+        firstName = name ?? '';
+      }
+    }
+    Get.toNamed("CreateAccount",
+        arguments: new SignUp(
+            method: socialLogin.name,
+            email: email!,
+            password: AppConstants.kDefaultPassword,
+            firstName: firstName ?? '',
+            lastName: lastName ?? ''));
   }
 
   Future<bool> login(String email, String password) async {

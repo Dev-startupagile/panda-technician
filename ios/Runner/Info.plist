@@ -50,11 +50,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Our app needs to access your Photo Library to set your profile Picture inside our app.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Our app needs to access your location to Find Nearby Technicians Around You</string>
+	<string>Our app needs to access your location to so nearby Customers can request your service</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Our app needs to access your location to Find Nearby Technicians Around You</string>
+	<string>Our app needs to access your location to so nearby Customers can request your service</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Our app needs to access your location to Find Nearby Technicians Around You</string>
+	<string>Our app needs to access your location to so nearby Customers can request your service</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Our app needs to access your Photo Library to set your profile Picture inside our app.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

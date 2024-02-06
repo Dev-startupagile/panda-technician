@@ -123,7 +123,8 @@ class DialogHelper {
     );
   }
 
-  static void showGetXErrorPopup(String title, String msg) {
+  static void showGetXErrorPopup(String title, String msg,
+      [Function? callback]) {
     Get.dialog(
         barrierDismissible: false,
         AlertDialog(
@@ -133,10 +134,20 @@ class DialogHelper {
           content: Text(msg),
           //buttons?
           actions: <Widget>[
+            if (callback != null)
+              TextButton(
+                child: const Text("Close"),
+                onPressed: () {
+                  Get.back();
+                }, //closes popup
+              ),
             TextButton(
-              child: const Text("Close"),
+              child: Text(callback != null ? "Signup" : "Close"),
               onPressed: () {
                 Get.back();
+                if (callback != null) {
+                  callback();
+                }
               }, //closes popup
             ),
           ],
