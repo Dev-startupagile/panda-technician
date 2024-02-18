@@ -103,7 +103,7 @@ class _LoginState extends State<Login> {
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: const Color.fromRGBO(51, 188, 132, 1)),
+                        color: Color.fromRGBO(51, 188, 132, 1)),
                     margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: TextButton(
                       onPressed: () async {

@@ -119,6 +119,20 @@ class _TechnicianTransactionWidgetState
       top: false,
       bottom: true,
       child: Scaffold(
+        appBar: AppBar(
+          foregroundColor: Colors.grey[700],
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back),
+            onPressed: () => Get.back(),
+          ),
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          title: Text(
+            "Payment History",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+          ),
+        ),
         body: transactions.isEmpty
             ? Center(
                 child: Text("No Payment History Yet!",
